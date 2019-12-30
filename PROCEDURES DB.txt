@@ -1,0 +1,32 @@
+
+CREATE OR ALTER PROCEDURE getUsers @Resultado AS BIT OUTPUT
+AS
+BEGIN
+	IF(SELECT COUNT(*) FROM usuario)>0
+	BEGIN
+		SELECT Nombre,Rol,Correo,Numero
+		FROM usuario;
+		SET @Resultado = 1;
+	END
+	ELSE
+		SET @Resultado = 0;
+END
+GO
+---------------
+---------------
+
+CREATE OR ALTER PROCEDURE getEvents @Resultado AS BIT OUTPUT
+AS
+BEGIN
+	IF(SELECT COUNT(*) FROM evento)>0
+	BEGIN
+		SELECT Nombre,Tipo,Ubicacion,CONVERT(VARCHAR(10), Fecha, 103) AS 'Fecha',CONVERT(VARCHAR(5), Hora, 108) AS 'Hora'
+		FROM evento;
+		SET @Resultado = 1;
+	END
+	ELSE
+		SET @Resultado = 0;
+END
+GO
+----------------
+----------------
