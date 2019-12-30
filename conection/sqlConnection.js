@@ -3,13 +3,13 @@ const config = {
     user: 'sa',
     password: 'sa1234567890',
     server: 'localhost',
-    database: 'SAMPLE'
+    database: 'QEvent'
 
     //SERVER
     /*user: 'sa',
-password: 'Sa123456',
-    server: 'localhost',
-    database: 'EventosCTEC'*/
+    password: 'sa1234567890',
+    server: '----',
+    database: 'QEvent'*/
 };
 
 module.exports = config;
