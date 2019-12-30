@@ -50,9 +50,11 @@ CREATE TABLE evento(
    Tipo VARCHAR(100) NOT NULL,
    ID_invitadoFK INT NOT NULL,
    ID_encargadoFK INT NOT NULL,
+   ID_restriccionFK INT NOT NULL,
    PRIMARY KEY (ID_evento),
    FOREIGN KEY (ID_invitadoFK) REFERENCES invitadoEspecial(ID_invitado),
-   FOREIGN KEY (ID_encargadoFK) REFERENCES usuario(ID_usuario)
+   FOREIGN KEY (ID_encargadoFK) REFERENCES usuario(ID_usuario),
+   FOREIGN KEY (ID_restriccionFK) REFERENCES restriccion(ID_restriccion)
 
 )
 GO
@@ -63,15 +65,6 @@ CREATE TABLE evento_imagen(
 	PRIMARY KEY (ID_evento_imagen),
 	FOREIGN KEY (ID_eventoFK) REFERENCES evento(ID_evento),
 	FOREIGN KEY (ID_imagenFK) REFERENCES imagen(ID_imagen)
-)
-GO
-CREATE TABLE evento_restriccion(
-	ID_evento_restriccion INT IDENTITY NOT NULL,
-	ID_eventoFK INT NOT NULL,
-	ID_restriccionFK INT NOT NULL,
-	PRIMARY KEY (ID_evento_restriccion),
-	FOREIGN KEY (ID_eventoFK) REFERENCES evento(ID_evento),
-	FOREIGN KEY (ID_restriccionFK) REFERENCES restriccion(ID_restriccion)
 )
 GO
 CREATE TABLE invitado_imagen(
@@ -92,11 +85,14 @@ CREATE TABLE usuario_codigoQR(
 	FOREIGN KEY (ID_usuarioFK) REFERENCES usuario(ID_usuario),
 	FOREIGN KEY (ID_codigoQRFK) REFERENCES codigoQR(ID_codigoQR)
 )
+SELECT * FROM USUARIO
 GO
-INSERT INTO usuario(Nombre,Correo,Numero,Rol) VALUES('Ignacio','algo@gmail.com','86835719','Administrador')
+INSERT INTO usuario(Nombre,Correo,NombreUsuario,Contrasena,Numero,Rol) VALUES('Ignacio','algo@gmail.com','IGN','1234','86835719','Administrador')
 GO
 INSERT INTO invitadoEspecial(Nombre,Descripcion) VALUES('Carlos','BLABLA')
 GO
-INSERT INTO evento(Nombre,Descripcion,Ubicacion,Fecha,Hora,Tipo,ID_encargadoFK,ID_invitadoFK) VALUES ('Evento 1','Actividad recreativa para niños','Monterrey, San Carlos','2019-12-22','12:30','Cultural',1,1)
+Insert into restriccion(Detalle) values ('ninguna restriccion')
+go
+INSERT INTO evento(Nombre,Descripcion,Ubicacion,Fecha,Hora,Tipo,ID_encargadoFK,ID_invitadoFK,ID_restriccionFK) VALUES ('Evento 1','Actividad recreativa para niños','Monterrey, San Carlos','2019-12-22','12:30','Cultural',3,1,1)
 GO
 SELECT * FROM evento

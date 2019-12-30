@@ -20,8 +20,26 @@ AS
 BEGIN
 	IF(SELECT COUNT(*) FROM evento)>0
 	BEGIN
-		SELECT Nombre,Tipo,Ubicacion,CONVERT(VARCHAR(10), Fecha, 103) AS 'Fecha',CONVERT(VARCHAR(5), Hora, 108) AS 'Hora'
+		SELECT ID_evento, Nombre,Tipo,Ubicacion,CONVERT(VARCHAR(10), Fecha, 103) AS 'Fecha',CONVERT(VARCHAR(5), Hora, 108) AS 'Hora'
 		FROM evento;
+		SET @Resultado = 1;
+	END
+	ELSE
+		SET @Resultado = 0;
+END
+GO
+----------------
+----------------
+CREATE OR ALTER PROCEDURE getEvent  @id_evento INTEGER,@Resultado AS BIT OUTPUT
+AS
+BEGIN
+	IF(SELECT COUNT(*) FROM evento WHERE @id_evento=ID_evento)>0
+	BEGIN
+		SELECT ID_evento,NombreEvento,DescEvento,Restricciones,FuenteEvento,Tipo,Ubicacion,Fecha,Hora,NombreInvit,DescInvit,Fuente AS 'FuenteInvit' FROM(
+		SELECT e.ID_evento,e.Nombre AS 'NombreEvento',e.Descripcion AS 'DescEvento',Fuente AS 'FuenteEvento',e.Tipo,e.Ubicacion,CONVERT(VARCHAR(10), e.Fecha, 103) AS 'Fecha',CONVERT(VARCHAR(5), e.Hora, 108) AS 'Hora',ie.Nombre AS 'NombreInvit',
+		ie.Descripcion AS 'DescInvit',ii.ID_invitadoFK,r.Detalle AS 'Restricciones'
+		FROM evento e INNER JOIN invitadoEspecial ie ON ie.ID_invitado=e.ID_invitadoFK AND @id_evento=ID_evento INNER JOIN invitado_imagen ii ON ii.ID_invitadoFK=ie.ID_invitado
+		 INNER JOIN evento_imagen eei ON eei.ID_eventoFK=e.ID_evento INNER JOIN imagen i ON i.ID_imagen=eei.ID_imagenFK INNER JOIN restriccion r ON r.ID_restriccion=e.ID_restriccionFK) AS tableEvento INNER JOIN imagen i ON i.ID_imagen=ID_invitadoFK;
 		SET @Resultado = 1;
 	END
 	ELSE

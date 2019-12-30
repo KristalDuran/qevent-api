@@ -1,14 +1,14 @@
 var sql = require('mssql');
 var poolConnection = require('../conection/connection');
-/*
-exports.DeleteEvent = async (req) => {
+
+exports.deleteUser = async (req) => {
     try {
         console.log(req)
-        const pool = await poolConnection.getPoolConnection();
+        const pool = await poolConnection.getConnection();
         let result = await pool.request()
-            .input('Id',            sql.Int,    req.Id)
+            .input('id_usuario',            sql.Int,    1003)
             .output('Resultado',    sql.Bit)
-            .execute('SP_Eliminar_Evento');
+            .execute('deleteUser');
             
         sql.close();
         console.log(result);
@@ -19,4 +19,4 @@ exports.DeleteEvent = async (req) => {
         console.log(err);
         return "Error en " + err;
     }
-};*/
+};

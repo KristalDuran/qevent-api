@@ -2,11 +2,11 @@ var express = require('express');
 var router = express.Router();
 var eventManager = require('../manager/dropsManager');
 
-/*
-router.post('/DeleteEvent', function(req, res, next) {
+
+router.get('/deleteUser', function(req, res, next) { //post
 
     try {
-        eventManager.DeleteEvent(req.body).then(
+        eventManager.deleteUser(req.body).then(
             (data) => {
                 let response = {
                   content: data.recordset,
@@ -25,5 +25,4 @@ router.post('/DeleteEvent', function(req, res, next) {
         res.send(JSON.stringify(response));
     }
   });
-  */
 module.exports = router;

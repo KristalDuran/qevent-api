@@ -33,3 +33,37 @@ exports.getEvents = async (req) => {
         return "Error en " + err;   
     }
 }
+exports.getEvent = async (req) => {
+    try {
+        const pool = await poolConnection.getConnection();
+        let result = await pool.request()
+            .input('id_evento',2)//2
+            .output('Resultado', sql.Bit)
+            .execute('getEvent');
+        sql.close();
+        console.log(result);
+        return result;
+
+    } catch (err) {
+        console.log(err)
+        sql.close();
+        return "Error en " + err;   
+    }
+}
+exports.getUser = async (req) => {
+    try {
+        const pool = await poolConnection.getConnection();
+        let result = await pool.request()
+            .input('id_user',3)//2
+            .output('Resultado', sql.Bit)
+            .execute('getUser');
+        sql.close();
+        console.log(result);
+        return result;
+
+    } catch (err) {
+        console.log(err)
+        sql.close();
+        return "Error en " + err;   
+    }
+}
