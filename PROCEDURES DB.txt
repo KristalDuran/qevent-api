@@ -2,26 +2,25 @@
 CREATE OR ALTER PROCEDURE getUsers @Resultado AS BIT OUTPUT
 AS
 BEGIN
-	IF(SELECT COUNT(*) FROM usuario)>0
+	IF(SELECT COUNT(*) FROM usuario WHERE Eliminado=0)>0
 	BEGIN
-		SELECT Nombre,Rol,Correo,Numero
-		FROM usuario;
+		SELECT ID_usuario,Nombre,Rol
+		FROM usuario WHERE Eliminado=0;
 		SET @Resultado = 1;
 	END
 	ELSE
 		SET @Resultado = 0;
 END
-GO
----------------
+GO---------------
 ---------------
 
 CREATE OR ALTER PROCEDURE getEvents @Resultado AS BIT OUTPUT
 AS
 BEGIN
-	IF(SELECT COUNT(*) FROM evento)>0
+	IF(SELECT COUNT(*) FROM evento WHERE Eliminado=0)>0
 	BEGIN
 		SELECT ID_evento, Nombre,Tipo,Ubicacion,CONVERT(VARCHAR(10), Fecha, 103) AS 'Fecha',CONVERT(VARCHAR(5), Hora, 108) AS 'Hora'
-		FROM evento;
+		FROM evento WHERE Eliminado=0;
 		SET @Resultado = 1;
 	END
 	ELSE
@@ -33,13 +32,13 @@ GO
 CREATE OR ALTER PROCEDURE getEvent  @id_evento INTEGER,@Resultado AS BIT OUTPUT
 AS
 BEGIN
-	IF(SELECT COUNT(*) FROM evento WHERE @id_evento=ID_evento)>0
+	IF(SELECT COUNT(*) FROM evento WHERE @id_evento=ID_evento AND Eliminado=0)>0
 	BEGIN
-		SELECT ID_evento,NombreEvento,DescEvento,Restricciones,FuenteEvento,Tipo,Ubicacion,Fecha,Hora,NombreInvit,DescInvit,Fuente AS 'FuenteInvit' FROM(
-		SELECT e.ID_evento,e.Nombre AS 'NombreEvento',e.Descripcion AS 'DescEvento',Fuente AS 'FuenteEvento',e.Tipo,e.Ubicacion,CONVERT(VARCHAR(10), e.Fecha, 103) AS 'Fecha',CONVERT(VARCHAR(5), e.Hora, 108) AS 'Hora',ie.Nombre AS 'NombreInvit',
-		ie.Descripcion AS 'DescInvit',ii.ID_invitadoFK,r.Detalle AS 'Restricciones'
-		FROM evento e INNER JOIN invitadoEspecial ie ON ie.ID_invitado=e.ID_invitadoFK AND @id_evento=ID_evento INNER JOIN invitado_imagen ii ON ii.ID_invitadoFK=ie.ID_invitado
-		 INNER JOIN evento_imagen eei ON eei.ID_eventoFK=e.ID_evento INNER JOIN imagen i ON i.ID_imagen=eei.ID_imagenFK INNER JOIN restriccion r ON r.ID_restriccion=e.ID_restriccionFK) AS tableEvento INNER JOIN imagen i ON i.ID_imagen=ID_invitadoFK;
+		SELECT ID_evento,NombreEvento,DescEvento,Restricciones,FuenteEvento,Tipo,Ubicacion,Fecha,Hora,NombreInvit,DescInvit,CorreoInvit,NumeroInvit,Fuente AS 'FuenteInvit' FROM(
+		SELECT e.ID_evento,e.Nombre AS 'NombreEvento',e.ID_invitadoFK AS 'ID_inv',e.Descripcion AS 'DescEvento',Fuente AS 'FuenteEvento',e.Tipo,e.Ubicacion,CONVERT(VARCHAR(10), e.Fecha, 103) AS 'Fecha',CONVERT(VARCHAR(5), e.Hora, 108) AS 'Hora',ie.Nombre AS 'NombreInvit',ie.Numero AS 'NumeroInvit',ie.Correo AS 'CorreoInvit',
+		ie.Descripcion AS 'DescInvit',r.Detalle AS 'Restricciones'
+		FROM evento e INNER JOIN invitadoEspecial ie ON ie.ID_invitado=e.ID_invitadoFK AND @id_evento=ID_evento
+		 INNER JOIN evento_imagen eei ON eei.ID_eventoFK=e.ID_evento INNER JOIN imagen i ON i.ID_imagen=eei.ID_imagenFK INNER JOIN restriccion r ON r.ID_restriccion=e.ID_restriccionFK) AS tableEvento INNER JOIN invitado_imagen ii ON ID_inv=ii.ID_invitadoFK INNER JOIN imagen i ON i.ID_imagen=ii.ID_imagenFK;
 		SET @Resultado = 1;
 	END
 	ELSE
@@ -48,3 +47,238 @@ END
 GO
 ----------------
 ----------------
+CREATE OR ALTER PROCEDURE getUser  @id_user INTEGER,@Resultado AS BIT OUTPUT
+AS
+BEGIN
+	IF(SELECT COUNT(*) FROM usuario WHERE @id_user=ID_usuario AND Eliminado=0)>0
+	BEGIN
+		SELECT ID_usuario,Nombre,Correo,Rol,Numero FROM usuario WHERE ID_usuario=@id_user
+		SET @Resultado = 1;
+	END
+	ELSE
+		SET @Resultado = 0;
+END
+GO
+----------------
+----------------
+
+CREATE OR ALTER PROCEDURE addUser @name VARCHAR(75),@nameuser VARCHAR(10), @password VARCHAR(10), @email VARCHAR(50), @rol VARCHAR(15),@number VARCHAR(8),@Resultado AS BIT OUTPUT
+AS
+BEGIN
+	BEGIN TRY  
+		IF(SELECT COUNT(*) FROM usuario WHERE @name=Nombre AND Correo=@email AND Rol=@rol AND Numero=@number AND @nameuser=NombreUsuario AND Contrasena=@password)=1
+		BEGIN
+			UPDATE usuario SET Eliminado=0WHERE @name=Nombre AND Correo=@email AND Rol=@rol AND Numero=@number AND @nameuser=NombreUsuario AND Contrasena=@password
+		END
+		ELSE
+		BEGIN
+			INSERT INTO usuario(Nombre,Correo,Rol,NombreUsuario,Contrasena,Numero,Eliminado) VALUES (@name,@email,@rol,@nameuser,@password,@number,0)
+		END
+		SET @Resultado=1;
+	END TRY  
+	BEGIN CATCH  
+		 SET @Resultado=0;
+	END CATCH
+END
+GO
+
+----------------
+----------------
+CREATE OR ALTER PROCEDURE deleteUser @id_usuario INT,@Resultado AS BIT OUTPUT
+AS
+BEGIN
+	BEGIN TRY  
+		UPDATE usuario SET Eliminado=1 WHERE ID_usuario=@id_usuario
+		SET @Resultado=1;
+	END TRY  
+	BEGIN CATCH  
+		 SET @Resultado=0;
+	END CATCH
+END
+GO
+
+
+----------------
+----------------
+CREATE OR ALTER PROCEDURE editUser @id_usuario INT,@name VARCHAR(75), @email VARCHAR(50), @rol VARCHAR(15),@nameuser VARCHAR(10),@password VARCHAR(10),@number VARCHAR(8),@Resultado AS BIT OUTPUT
+AS
+BEGIN
+	BEGIN TRY  
+		IF(SELECT COUNT(*) FROM usuario WHERE @id_usuario=ID_usuario)=1
+		BEGIN
+			UPDATE usuario SET Nombre=@name, Correo=@email , Rol=@rol , Numero=@number, NombreUsuario=@nameuser,Contrasena=@password WHERE @id_usuario=ID_usuario
+			SET @Resultado=1;
+		END
+		ELSE
+		BEGIN
+			SET @Resultado=0;
+		END
+		
+	END TRY  
+	BEGIN CATCH  
+		 SET @Resultado=0;
+	END CATCH
+END
+GO
+--------------
+--------------
+
+
+CREATE OR ALTER PROCEDURE addEvent  @nameEv VARCHAR(50), @descripcionEv VARCHAR(300), @ubicacion VARCHAR(200),
+@tipo VARCHAR(100),@fecha DATE,@hora TIME(7),@restriccion VARCHAR(200),@idencargado INT,@nameInv VARCHAR(50),@descInv VARCHAR(300),@correoInv VARCHAR(50)
+,@numeroInv VARCHAR(8),@URLimgInv VARCHAR(300),@URLimgEv VARCHAR(300),@Resultado AS BIT OUTPUT
+AS
+BEGIN
+	DECLARE @idEvent INT, @idInvitado INT, @idRestriccion INT,@idImgInv INT, @idImgEv INT
+	INSERT INTO imagen (Fuente) VALUES (@URLimgEv),(@URLimgInv)
+	SET @idImgEv= (SELECT ID_imagen FROM imagen WHERE Fuente=@URLimgEv)
+	SET @idImgInv= (SELECT ID_imagen FROM imagen WHERE Fuente=@URLimgInv)
+	IF(SELECT COUNT(*) FROM evento WHERE @nameEv=Nombre AND Descripcion=@descripcionEv  AND Ubicacion=@ubicacion AND Tipo=@tipo AND Hora=@hora)=1
+	BEGIN
+		SET @Resultado=0;	
+	END
+	ELSE
+	BEGIN
+		IF(SELECT COUNT(*) FROM restriccion WHERE Detalle=@restriccion)=1
+		BEGIN
+			SET @idRestriccion = (SELECT ID_restriccion FROM restriccion WHERE Detalle=@restriccion)
+		END
+		ELSE
+		BEGIN
+			INSERT INTO restriccion(Detalle) VALUES (@restriccion)
+			SET @idRestriccion = (SELECT ID_restriccion FROM restriccion WHERE Detalle=@restriccion)
+		END
+		IF(SELECT COUNT(*) FROM invitadoEspecial WHERE @nameInv=Nombre AND Correo=@correoInv  AND Numero=@numeroInv)=1
+		BEGIN
+			SET @idInvitado = (SELECT ID_invitado FROM invitadoEspecial WHERE @nameInv=Nombre AND Descripcion=@descInv AND Correo=@correoInv AND Numero=@numeroInv)
+		END
+		ELSE
+		BEGIN
+			INSERT INTO invitadoEspecial(Nombre,Descripcion,Correo,Numero) VALUES (@nameInv,@descInv,@correoInv,@numeroInv)
+			SET @idInvitado = (SELECT ID_invitado FROM invitadoEspecial WHERE @nameInv=Nombre AND Descripcion=@descInv AND Correo=@correoInv AND Numero=@numeroInv)
+		END
+		INSERT INTO evento(Nombre,Descripcion,Ubicacion,Fecha,Hora,Tipo,ID_invitadoFK,ID_encargadoFK,ID_restriccionFK,Eliminado) 
+		VALUES (@nameEv,@descripcionEv,@ubicacion,@fecha,@hora,@tipo,@idInvitado,@idencargado,@idRestriccion,0)
+		SET @idEvent= (SELECT ID_evento FROM evento WHERE Nombre=@nameEv AND Descripcion=@descripcionEv AND Ubicacion=@ubicacion AND tipo=@tipo AND ID_restriccionFK=@idRestriccion)
+		INSERT INTO invitado_imagen(ID_imagenFK,ID_invitadoFK) VALUES (@idImgInv,@idInvitado)
+		INSERT INTO evento_imagen(ID_eventoFK,ID_imagenFK) VALUES (@idEvent,@idImgEv)
+		SET @Resultado=1;
+	END
+	
+END
+GO 
+----------------
+-------------
+
+CREATE OR ALTER PROCEDURE editEvent  @idEv INT,@nameEv VARCHAR(50), @descripcionEv VARCHAR(300), @ubicacion VARCHAR(200),
+@tipo VARCHAR(100),@fecha DATE,@hora TIME(7),@restriccion VARCHAR(200),@idencargado INT,@nameInv VARCHAR(8),@descInv VARCHAR(8),@correoInv VARCHAR(50),
+@numeroInv VARCHAR(8),@URLimgInv VARCHAR(300),@URLimgEv VARCHAR(300),@Resultado AS BIT OUTPUT
+AS
+BEGIN
+	DECLARE @idInvitado INT, @idRestriccion INT,@idImgInv INT, @idImgEv INT
+	IF(SELECT COUNT(*) FROM evento WHERE ID_evento=@idEv)=0
+	BEGIN
+		SET @Resultado=0;	
+	END
+	ELSE
+	BEGIN
+		IF (@restriccion is not null)
+		BEGIN
+			IF(SELECT COUNT(*) FROM restriccion WHERE Detalle=@restriccion)=1
+			BEGIN
+				SET @idRestriccion = (SELECT ID_restriccion FROM restriccion WHERE Detalle=@restriccion)
+			END
+			ELSE
+			BEGIN
+				INSERT INTO restriccion(Detalle) VALUES (@restriccion)
+				SET @idRestriccion = (SELECT ID_restriccion FROM restriccion WHERE Detalle=@restriccion)
+			END
+			UPDATE evento SET ID_restriccionFK=@idRestriccion WHERE ID_evento=@idEv
+			
+		END
+		IF(@nameInv is not null AND @descInv is not null AND @numeroInv is not null AND @correoInv is not null)
+		BEGIN
+			IF(SELECT COUNT(*) FROM invitadoEspecial WHERE @nameInv=Nombre AND Descripcion=@descInv AND Correo=@correoInv AND Numero=@numeroInv)=1
+			BEGIN
+				SET @idInvitado = (SELECT ID_invitado FROM invitadoEspecial WHERE @nameInv=Nombre AND Descripcion=@descInv AND Correo=@correoInv AND Numero=@numeroInv)
+			END
+			ELSE
+			BEGIN
+				INSERT INTO invitadoEspecial(Nombre,Descripcion,Correo,Numero) VALUES (@nameInv,@descInv,@correoInv,@numeroInv)
+				SET @idInvitado = (SELECT ID_invitado FROM invitadoEspecial WHERE @nameInv=Nombre AND Descripcion=@descInv AND Correo=@correoInv AND Numero=@numeroInv)
+			END
+			UPDATE evento SET ID_invitadoFK=@idInvitado WHERE ID_evento=@idEv
+		END
+		IF(@nameEv is not null)
+		BEGIN
+			UPDATE evento SET Nombre=@nameEv WHERE ID_evento=@idEv
+		END
+		IF(@descripcionEv is not null)
+		BEGIN
+			UPDATE evento SET Descripcion=@descripcionEv WHERE ID_evento=@idEv
+		END
+		IF(@hora is not null)
+		BEGIN
+			UPDATE evento SET Hora=@hora WHERE ID_evento=@idEv
+		END
+		IF(@fecha is not null)
+		BEGIN
+			UPDATE evento SET Fecha=@fecha WHERE ID_evento=@idEv
+		END
+		IF (@ubicacion is not null)
+		BEGIN
+			UPDATE evento SET Ubicacion=@ubicacion WHERE ID_evento=@idEv
+		END
+		IF(@tipo is not null)
+		BEGIN
+			UPDATE evento SET Tipo=@tipo WHERE ID_evento=@idEv
+		END
+		IF(@idencargado is not null)
+		BEGIN
+			UPDATE evento SET ID_encargadoFK=@idencargado WHERE ID_evento=@idEv
+		END
+		IF(@URLimgEv is not null)
+		BEGIN
+			INSERT INTO imagen(Fuente) VALUES (@URLimgEv)
+			SET @idImgEv= (SELECT ID_imagen FROM imagen WHERE Fuente=@URLimgEv)
+			UPDATE evento_imagen SET ID_imagenFK=@idImgEv WHERE ID_eventoFK=@idEv
+		END
+		IF(@URLimgInv is not null)
+		BEGIN
+			INSERT INTO imagen(Fuente) VALUES (@URLimgInv)
+			SET @idImgInv= (SELECT ID_imagen FROM imagen WHERE Fuente=@URLimgInv)
+			UPDATE invitado_imagen SET ID_imagenFK=@idImgInv WHERE ID_invitadoFK=@idEv
+		END
+		SET @Resultado=1;
+	END
+	
+END
+GO 
+----------------
+-------------
+CREATE OR ALTER   PROCEDURE deleteEvent @id_evento INT,@Resultado AS BIT OUTPUT
+AS
+BEGIN
+	BEGIN TRY  
+		UPDATE evento SET Eliminado=1 WHERE ID_evento=@id_evento
+		SET @Resultado=1;
+	END TRY  
+	BEGIN CATCH  
+		 SET @Resultado=0;
+	END CATCH
+END
+GO
+
+
+
+
+
+
+
+
+
+
+
+
+
+

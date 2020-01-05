@@ -5,8 +5,12 @@ GO
 CREATE TABLE invitadoEspecial(
 	ID_invitado INT IDENTITY NOT NULL,
 	Nombre VARCHAR(50) NOT NULL,
-	Descripcion VARCHAR(300) NOT NULL,	
-	PRIMARY KEY (ID_invitado)
+	Descripcion VARCHAR(300) NOT NULL,
+	Correo VARCHAR(50) NOT NULL,
+	Numero VARCHAR(8) NOT NULL,	
+	PRIMARY KEY (ID_invitado),
+	CHECK (Numero LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'),
+	CHECK (Correo LIKE '%___@___%.__%')
 )
 GO
 CREATE TABLE usuario(
@@ -17,6 +21,7 @@ CREATE TABLE usuario(
 	Correo VARCHAR(50) NOT NULL,
 	Rol VARCHAR(15) NOT NULL,
 	Numero VARCHAR(8) NOT NULL,
+	Eliminado BIT NOT NULL,
 	PRIMARY KEY (ID_usuario),
 	CHECK (Numero LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'),
 	CHECK (Correo LIKE '%___@___%.__%')
@@ -51,6 +56,7 @@ CREATE TABLE evento(
    ID_invitadoFK INT NOT NULL,
    ID_encargadoFK INT NOT NULL,
    ID_restriccionFK INT NOT NULL,
+   Eliminado BIT NOT NULL,
    PRIMARY KEY (ID_evento),
    FOREIGN KEY (ID_invitadoFK) REFERENCES invitadoEspecial(ID_invitado),
    FOREIGN KEY (ID_encargadoFK) REFERENCES usuario(ID_usuario),
@@ -87,12 +93,36 @@ CREATE TABLE usuario_codigoQR(
 )
 SELECT * FROM USUARIO
 GO
-INSERT INTO usuario(Nombre,Correo,NombreUsuario,Contrasena,Numero,Rol) VALUES('Ignacio','algo@gmail.com','IGN','1234','86835719','Administrador')
+INSERT INTO usuario(Nombre,Correo,NombreUsuario,Contrasena,Numero,Rol,Eliminado) VALUES('Ignacio','algo@gmail.com','IGN','1234','86835719','Administrador',0)
 GO
-INSERT INTO invitadoEspecial(Nombre,Descripcion) VALUES('Carlos','BLABLA')
+INSERT INTO invitadoEspecial(Nombre,Descripcion,Numero,Correo) VALUES('Carlos','BLABLA','123456789','invitado@gmail.com')
 GO
 Insert into restriccion(Detalle) values ('ninguna restriccion')
 go
-INSERT INTO evento(Nombre,Descripcion,Ubicacion,Fecha,Hora,Tipo,ID_encargadoFK,ID_invitadoFK,ID_restriccionFK) VALUES ('Evento 1','Actividad recreativa para niños','Monterrey, San Carlos','2019-12-22','12:30','Cultural',3,1,1)
+INSERT INTO evento(Nombre,Descripcion,Ubicacion,Fecha,Hora,Tipo,ID_encargadoFK,ID_invitadoFK,ID_restriccionFK,Eliminado) VALUES ('Evento 1','Actividad recreativa para niños','Monterrey, San Carlos','2019-12-22','12:30','Cultural',1,1,1,0)
+GO
+INSERT INTO imagen(Fuente)	VALUES ('www.descarga.com')
+GO
+INSERT INTO imagen(Fuente)	VALUES ('www.invitado.com')
+GO
+INSERT INTO invitado_imagen(ID_invitadoFK,ID_imagenFK) VALUES (1,2)
+GO
+INSERT INTO evento_imagen(ID_eventoFK,ID_imagenFK) VALUES (1,1)
 GO
 SELECT * FROM evento
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
