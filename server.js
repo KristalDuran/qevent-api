@@ -3,6 +3,8 @@ const express = require('express'),
     app = express(),
     server = require('http').createServer(app);
 app.set('port',3000);
+
+app.use(express.json());
 /****************************************************************/
 /*headers*/
 app.use((req, res, next) => {

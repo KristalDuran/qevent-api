@@ -22,9 +22,51 @@ router.get('/updateUser', function(req, res, next) { //post
         res.send(JSON.stringify(response));
     }
   });
-  router.get('/updateEvent', function(req, res, next) { //post
+router.get('/updateEvent', function(req, res, next) { //
     try {
         eventManager.updateEvent(req.body).then(
+            (data) => {
+                let response = {
+                  content: data.recordset,
+                  success: data.output,
+                  code: 200
+                };
+                res.send(JSON.stringify(response));
+            }
+        );
+    }
+    catch (err) {
+        let response = {
+          content: err,
+          code: 500
+        };
+        res.send(JSON.stringify(response));
+    }
+  });
+  router.get('/updateDislikeEvent', function(req, res, next) { //
+    try {
+        eventManager.updateDislikeEvent(req.body).then(
+            (data) => {
+                let response = {
+                  content: data.recordset,
+                  success: data.output,
+                  code: 200
+                };
+                res.send(JSON.stringify(response));
+            }
+        );
+    }
+    catch (err) {
+        let response = {
+          content: err,
+          code: 500
+        };
+        res.send(JSON.stringify(response));
+    }
+  });
+  router.get('/updateLikeEvent', function(req, res, next) { //
+    try {
+        eventManager.updateLikeEvent(req.body).then(
             (data) => {
                 let response = {
                   content: data.recordset,

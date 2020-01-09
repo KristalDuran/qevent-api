@@ -48,7 +48,6 @@ exports.updateUser = async (req) => {
             //.input('nameuser',                sql.VarChar(10),    'crnodal')
             //.input('password',                sql.VarChar(10),    '12345')
             .input('number',                      sql.VarChar(8),   '88339374')
-            .output('Resultado',                sql.Bit)
             .output('Resultado',    sql.Bit)
             .execute('editUser');
             
@@ -62,6 +61,49 @@ exports.updateUser = async (req) => {
         return "Error en " + err;
     }
 };
+
+exports.updateLikeEvent = async (req) => {
+    try {
+        console.log(req)
+        const pool = await poolConnection.getConnection();
+        let result = await pool.request()
+            .input('idevento',            sql.Int,    1)
+            .input('idusuario',              sql.Int,   1)
+            .output('Resultado',    sql.Bit)
+            .execute('likeEvent');
+            
+        sql.close();
+        console.log(result);
+        return result;
+
+    } catch (err) {
+        sql.close();
+        console.log(err);
+        return "Error en " + err;
+    }
+};
+
+exports.updateDislikeEvent = async (req) => {
+    try {
+        console.log(req)
+        const pool = await poolConnection.getConnection();
+        let result = await pool.request()
+            .input('idevento',            sql.Int,    1)
+            .input('idusuario',              sql.Int,   1)
+            .output('Resultado',    sql.Bit)
+            .execute('dislikeEvent');
+            
+        sql.close();
+        console.log(result);
+        return result;
+
+    } catch (err) {
+        sql.close();
+        console.log(err);
+        return "Error en " + err;
+    }
+};
+
 
 
 

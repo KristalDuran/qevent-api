@@ -56,3 +56,41 @@ exports.addUser = async (req) => {
         return "Error en " + err;
     }
 }
+exports.shareEvent = async (req) => {
+    try {
+        const pool = await poolConnection.getConnection();
+        let result = await pool.request()
+            .input('idevento',              sql.INT,   1)
+            .output('Resultado',                sql.Bit)
+            .execute('shareEvent');
+            
+        sql.close();
+        console.log(result);
+        return result;
+
+    } catch (err) {
+        sql.close();
+        console.log(err);
+        return "Error en " + err;
+    }
+}
+exports.evaluateEvent = async (req) => {
+    try {
+        const pool = await poolConnection.getConnection();
+        let result = await pool.request()
+            .input('idevento',              sql.INT,   1)
+            .input('valor',               sql.INT,    4)
+            .input('descripcion',                sql.VarChar(300),    'Evento bastante divertido')
+            .output('Resultado',                sql.Bit)
+            .execute('evaluateEvent');
+            
+        sql.close();
+        console.log(result);
+        return result;
+
+    } catch (err) {
+        sql.close();
+        console.log(err);
+        return "Error en " + err;
+    }
+}
