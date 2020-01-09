@@ -1,33 +1,63 @@
+#!/usr/bin/env node
 
-const express = require('express'),
-    app = express(),
-    server = require('http').createServer(app);
-app.set('port',3000);
+/**
+ * Module dependencies.
+ */
+var app = require('./app');
+var debug = require('debug')('sgabackend:server');
+var http = require('http');
+/**
+ * Get port from environment and store in Express.
+ */
 
-app.use(express.json());
-/****************************************************************/
-/*headers*/
-app.use((req, res, next) => {
-    // res.header("Access-Control-Allow-Origin", "http://ctec.tec.ac.cr");
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-    next();
-});
+app.set('port', process.env.PORT || 3000);
 
-const getsController = require('./controller/getsController')
-const updatesController = require('./controller/updatesController')
-const dropsController = require('./controller/dropsController')
-const putsController = require('./controller/putsController')
+/**
+ * Create HTTP server.
+ */
 
-app.use('/gets', getsController);
-app.use('/updates',updatesController);
-app.use('/drops',dropsController);
-app.use('/puts',putsController);
+var server = http.createServer(app);
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+server.listen(app.get('port'));
+server.on('error', onError);
+server.on('listening', onListening);
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+    if (error.syscall !== 'listen') {
+        throw error;
+    }
+    // handle specific listen errors with friendly messages
+    switch (error.code) {
+        case 'EACCES':
+            console.error(bind + ' requires elevated privileges');
+            process.exit(1);
+            break;
+        case 'EADDRINUSE':
+            console.error(bind + ' is already in use');
+            process.exit(1);
+            break;
+        default:
+            throw error;
+    }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+    debug('Listening on ' + app.get('port'));
+    console.log("Listening on port " + app.get('port'));
+}
 
 
-server.listen(app.get('port'), function() {
-    console.log('Servidor escuchando en el puerto: ' + app.get('port'));
-});
 
 
