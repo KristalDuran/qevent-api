@@ -4,7 +4,7 @@ var eventManager = require('../manager/putsManager');
 
 router.get('/addUser', function(req, res, next) {//post
     try {
-        eventManager.addUser(req.body).then(
+        eventManager.addUser(req.query).then(
             (data) => {
                 let response = {
                     content: data.recordset,
@@ -25,7 +25,7 @@ router.get('/addUser', function(req, res, next) {//post
 });
 router.get('/addEvent', function(req, res, next) {//post
     try {
-        eventManager.addEvent(req.body).then(
+        eventManager.addEvent(req.query).then(
             (data) => {
                 let response = {
                     content: data.recordset,

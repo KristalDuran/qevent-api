@@ -37,7 +37,7 @@ exports.getEvent = async (req) => {
     try {
         const pool = await poolConnection.getConnection();
         let result = await pool.request()
-            .input('id_evento',2)//2
+            .input('id_evento',req.id)//2
             .output('Resultado', sql.Bit)
             .execute('getEvent');
         sql.close();

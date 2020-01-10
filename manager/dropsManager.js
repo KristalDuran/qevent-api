@@ -6,7 +6,7 @@ exports.deleteUser = async (req) => {
         console.log(req)
         const pool = await poolConnection.getConnection();
         let result = await pool.request()
-            .input('id_usuario',            sql.Int,    req.idUsuario)//1
+            .input('id_usuario',            sql.Int,    req.id)//1
             .output('Resultado',    sql.Bit)
             .execute('deleteUser');
             

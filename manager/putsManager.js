@@ -6,20 +6,20 @@ exports.addEvent = async (req) => {
     try {
         const pool = await poolConnection.getConnection();
         let result = await pool.request()
-            .input('nameEv',              sql.VarChar(50),   'Cristian')//req.nameEvento
-            .input('descripcionEV',               sql.VarChar(300),    'otro@gmail.com')
-            .input('ubicacion',                sql.VarChar(200),    'Alajuela, Costa Rica')
-            .input('tipo',                sql.VarChar(100),    'Cultural')//req.tipo
-            .input('fecha',                sql.Date,    '2020-02-21')//req.fecha
-            .input('hora',                      sql.Time,   '12:30')
-            .input('restriccion',                sql.VarChar(200),    'Correr')
+            .input('nameEv',              sql.VarChar(50),   req.nameEv)//req.nameEvento
+            .input('descripcionEV',               sql.VarChar(300),    req.descripcionEV)
+            .input('ubicacion',                sql.VarChar(200),    req.ubicacion)
+            .input('tipo',                sql.VarChar(100),    req.tipo)//req.tipo
+            .input('fecha',                sql.Date,    req.fecha)//req.fecha
+            .input('hora',                      sql.VarChar(5),   '12:30')
+            .input('restriccion',                sql.VarChar(200),    req.restriccion)
             .input('idencargado',                sql.Int,    1)//req.idEncargado
-            .input('nameInv',                sql.VarChar(50),    'Carlitos')//req.nameInv
-            .input('descInv',                      sql.VarChar(300),   '88339374')
-            .input('correoInv',                sql.VarChar(50),    'otro@gmail.com')
-            .input('numeroInv',                sql.VarChar(8),    '88339374')
-            .input('URLimgInv',                sql.VarChar(300),    'url.com')
-            .input('URLimgEv',                      sql.VarChar(300),   'url.com')
+            .input('nameInv',                sql.VarChar(50),   "Invitado")//req.nameInv
+            .input('descInv',                      sql.VarChar(300),   'esta es el invitado mejor invitado')
+            .input('correoInv',                sql.VarChar(50),    'invitado@gmail.com')
+            .input('numeroInv',                sql.VarChar(8),    '88888888')
+            .input('URLimgInv',                sql.VarChar(300),   'algo')
+            .input('URLimgEv',                      sql.VarChar(300),   req.URLimgEv)
             .output('Resultado',                sql.Bit)
             .execute('addEvent');
             
@@ -37,11 +37,11 @@ exports.addUser = async (req) => {
     try {
         const pool = await poolConnection.getConnection();
         let result = await pool.request()
-            .input('name',              sql.VarChar(75),   'Cristian Nodal')
-            .input('email',               sql.VarChar(50),    'otro@gmail.com')
-            .input('rol',                sql.VarChar(15),    'Miembro')
-            //.input('nameuser',                sql.VarChar(10),    'crnodal')
-            //.input('password',                sql.VarChar(10),    '12345')
+            .input('name',              sql.VarChar(75),   req.name)
+            .input('email',               sql.VarChar(50),    req.email)
+            .input('rol',                sql.VarChar(15),    req.rol)
+            .input('nameuser',                sql.VarChar(10),    req.nameuser)
+            .input('password',                sql.VarChar(10),    req.password)
             .input('number',                      sql.VarChar(8),   '88339374')
             .output('Resultado',                sql.Bit)
             .execute('addUser');

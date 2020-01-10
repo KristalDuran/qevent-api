@@ -24,7 +24,8 @@ router.get('/getUsers', function(req, res, next) {
 });
 router.get('/getUser', function(req, res, next) {
     try {
-        eventManager.getUser(req.body).then(
+        console.log(req.query)
+        eventManager.getUser(req.query).then(
             (data) => {
                 let response = {
                     content: data.recordset,
@@ -66,7 +67,7 @@ router.get('/getEvents', function(req, res, next) {
 });
 router.get('/getEvent', function(req, res, next) {
     try {
-        eventManager.getEvent(req.body).then(
+        eventManager.getEvent(req.query).then(
             (data) => {
                 let response = {
                     content: data.recordset,
