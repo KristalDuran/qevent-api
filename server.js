@@ -6,16 +6,13 @@
 var app = require('./app');
 var debug = require('debug')('sgabackend:server');
 var http = require('http');
-/**
- * Get port from environment and store in Express.
- */
+
 
 app.set('port', process.env.PORT || 3000);
 
 /**
  * Create HTTP server.
  */
-
 var server = http.createServer(app);
 
 /**
@@ -55,7 +52,7 @@ function onError(error) {
 
 function onListening() {
     debug('Listening on ' + app.get('port'));
-    console.log("Listening on port " + app.get('port'));
+    console.log("Escuchando en port " + app.get('port'));
 }
 
 

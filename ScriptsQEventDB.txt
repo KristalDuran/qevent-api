@@ -53,12 +53,10 @@ CREATE TABLE evento(
    Fecha DATE NOT NULL, --Formato de Fecha  YYYY-MM-DD
    Hora TIME NOT NULL,
    Tipo VARCHAR(100) NOT NULL,
-   ID_invitadoFK INT NOT NULL,
    ID_encargadoFK INT NOT NULL,
    ID_restriccionFK INT NOT NULL,
    Eliminado BIT NOT NULL,
    PRIMARY KEY (ID_evento),
-   FOREIGN KEY (ID_invitadoFK) REFERENCES invitadoEspecial(ID_invitado),
    FOREIGN KEY (ID_encargadoFK) REFERENCES usuario(ID_usuario),
    FOREIGN KEY (ID_restriccionFK) REFERENCES restriccion(ID_restriccion)
 
@@ -81,6 +79,16 @@ CREATE TABLE invitado_imagen(
 	FOREIGN KEY (ID_invitadoFK) REFERENCES invitadoEspecial(ID_invitado),
 	FOREIGN KEY (ID_imagenFK) REFERENCES imagen(ID_imagen)
 )
+GO
+CREATE TABLE evento_invitado (
+ID_evento_invitado INT IDENTITY NOT NULL,
+ID_eventoFK INT,
+ID_invitadoFK INT,
+PRIMARY KEY(ID_evento_invitado),
+FOREIGN KEY(ID_eventoFK) REFERENCES  evento(ID_evento),
+FOREIGN KEY(ID_invitadoFK) REFERENCES  invitadoEspecial(ID_invitado)
+)
+
 GO
 CREATE TABLE usuario_codigoQR(
 	ID_usuario_codigoQR INT IDENTITY NOT NULL,
@@ -109,6 +117,8 @@ INSERT INTO invitado_imagen(ID_invitadoFK,ID_imagenFK) VALUES (1,2)
 GO
 INSERT INTO evento_imagen(ID_eventoFK,ID_imagenFK) VALUES (1,1)
 GO
+INSERT INTO evento_invitado(ID_eventoFK,ID_invitadoFK) values(1,1)
+go
 SELECT * FROM evento
 
 
