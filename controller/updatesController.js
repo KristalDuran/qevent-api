@@ -3,7 +3,7 @@ var router = express.Router();
 var eventManager = require('../manager/updatesManager');
 router.get('/updateUser', function(req, res, next) { //post
     try {
-        eventManager.updateUser(req.body).then(
+        eventManager.updateUser(req.query).then(
             (data) => {
                 let response = {
                   content: data.recordset,

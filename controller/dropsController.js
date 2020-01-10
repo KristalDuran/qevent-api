@@ -6,7 +6,7 @@ var eventManager = require('../manager/dropsManager');
 router.get('/deleteUser', function(req, res, next) { //post
 
     try {
-        eventManager.deleteUser(req.body).then(
+        eventManager.deleteUser(req.query).then(
             (data) => {
                 let response = {
                   content: data.recordset,
@@ -28,7 +28,7 @@ router.get('/deleteUser', function(req, res, next) { //post
   router.get('/deleteEvent', function(req, res, next) { //post
 
     try {
-        eventManager.deleteEvent(req.body).then(
+        eventManager.deleteEvent(req.query).then(
             (data) => {
                 let response = {
                   content: data.recordset,
