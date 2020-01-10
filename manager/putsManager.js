@@ -91,6 +91,25 @@ exports.shareEvent = async (req) => {
         return "Error en " + err;
     }
 }
+exports.addInscripcion = async (req) => {
+    try {
+        const pool = await poolConnection.getConnection();
+        let result = await pool.request()
+            .input('idusuario',              sql.INT,   1)
+            .input('idevento',              sql.INT,   1)
+            .output('Resultado',                sql.Bit)
+            .execute('addInscripcion');
+            
+        sql.close();
+        console.log(result);
+        return result;
+
+    } catch (err) {
+        sql.close();
+        console.log(err);
+        return "Error en " + err;
+    }
+}
 exports.evaluateEvent = async (req) => {
     try {
         const pool = await poolConnection.getConnection();

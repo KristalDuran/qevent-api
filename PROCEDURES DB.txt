@@ -398,11 +398,37 @@ GO
 
 -------------
 -------------
+CREATE OR ALTER PROCEDURE addInscripcion @idusuario INT, @idevento INT,@Resultado AS BIT OUTPUT
+AS
+BEGIN
+	INSERT INTO inscritos(ID_eventoFK,ID_usuarioFK) VALUES (@idevento,@idusuario)
+	SET @Resultado=1
+END
+GO
 
-
-
-
-
+CREATE OR ALTER PROCEDURE getMyEvents @idusuario INT, @Resultado AS BIT OUTPUT
+AS
+BEGIN
+	SELECT ID_evento, Nombre,Tipo,Ubicacion,Fecha,Hora
+		FROM evento  e INNER JOIN inscritos i ON i.ID_usuarioFK=@idusuario AND i.ID_eventoFK=e.ID_evento
+	SET @Resultado=1
+END
+GO
+CREATE OR ALTER PROCEDURE getAcces @nameuser VARCHAR(20),@password VARCHAR(20), @Resultado AS BIT OUTPUT
+AS
+BEGIN
+	IF (SELECT COUNT(*) FROM usuario WHERE NombreUsuario=@nameuser AND Contrasena=@password AND Eliminado=0)>0
+	BEGIN
+		SELECT ID_usuario,Nombre,NombreUsuario,Contrasena,Correo,Rol,Numero FROM usuario WHERE NombreUsuario=@nameuser AND Contrasena=@password
+		SET @Resultado = 1;
+	END
+	ELSE
+	BEGIN 
+		SET @Resultado=0
+	END
+	
+END
+GO
 
 
 

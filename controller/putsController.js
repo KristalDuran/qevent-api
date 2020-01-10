@@ -107,4 +107,25 @@ router.get('/evaluateEvent', function(req, res, next) {//post
         res.send(JSON.stringify(response));
     }
 });
+router.get('/addInscripcion', function(req, res, next) {//post
+    try {
+        eventManager.addInscripcion(req.query).then(
+            (data) => {
+                let response = {
+                    content: data.recordset,
+                    success: data.output,
+                    code: 200
+                };
+                res.send(JSON.stringify(response));
+            }
+        );
+    }
+    catch (err) {
+        let response = {
+            content: err,
+            code: 500
+        };
+        res.send(JSON.stringify(response));
+    }
+});
 module.exports = router;

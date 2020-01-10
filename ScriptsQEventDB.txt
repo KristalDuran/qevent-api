@@ -99,6 +99,18 @@ CREATE TABLE usuario_codigoQR(
 	FOREIGN KEY (ID_usuarioFK) REFERENCES usuario(ID_usuario),
 	FOREIGN KEY (ID_codigoQRFK) REFERENCES codigoQR(ID_codigoQR)
 )
+GO
+CREATE TABLE inscritos(
+	ID_inscritos INT IDENTITY,
+	ID_eventoFK INT,
+	ID_usuarioFK INT,
+	PRIMARY KEY(ID_inscritos),
+	FOREIGN KEY (ID_eventoFK) REFERENCES evento(ID_evento),
+	FOREIGN KEY (ID_usuarioFK) REFERENCES usuario(ID_usuario)
+)
+GO
+INSERT INTO inscritos(ID_eventoFK,ID_usuarioFK) values(1,1)
+GO
 SELECT * FROM USUARIO
 GO
 INSERT INTO usuario(Nombre,Correo,NombreUsuario,Contrasena,Numero,Rol,Eliminado) VALUES('Ignacio','algo@gmail.com','IGN','1234','86835719','Administrador',0)

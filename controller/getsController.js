@@ -107,5 +107,47 @@ router.get('/getInvitadosEvent', function(req, res, next) {
         res.send(JSON.stringify(response));
     }
 });
+router.get('/getMyEvents', function(req, res, next) {
+    try {
+        eventManager.getMyEvents(req.query).then(
+            (data) => {
+                let response = {
+                    content: data.recordset,
+                    success: data.output,
+                    code: 200
+                };
+                res.send(JSON.stringify(response));
+            }
+        );
+    }
+    catch (err) {
+        let response = {
+            content: err,
+            code: 500
+        };
+        res.send(JSON.stringify(response));
+    }
+});
 
+router.get('/getAcces', function(req, res, next) {
+    try {
+        eventManager.getAcces(req.query).then(
+            (data) => {
+                let response = {
+                    content: data.recordset,
+                    success: data.output,
+                    code: 200
+                };
+                res.send(JSON.stringify(response));
+            }
+        );
+    }
+    catch (err) {
+        let response = {
+            content: err,
+            code: 500
+        };
+        res.send(JSON.stringify(response));
+    }
+});
 module.exports = router;
