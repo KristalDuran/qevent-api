@@ -269,8 +269,89 @@ BEGIN
 END
 GO
 
+------------------
+--------------
 
+CREATE OR ALTER PROCEDURE shareEvent @idevento INT ,@Resultado AS BIT OUTPUT
+AS
+BEGIN
+	IF(SELECT COUNT(*) FROM evento WHERE ID_evento=@idevento)=0
+	BEGIN
+		SET @Resultado=0
+	END
+	ELSE
+	BEGIN
+		UPDATE evento SET Shares = Shares + 1 WHERE ID_evento=@idevento
+		SET @Resultado=1
+	END
+END
+GO
+-------------
+-------------
 
+CREATE OR ALTER PROCEDURE evaluateEvent @idevento INT,@valor INT, @descripcion VARCHAR(300),@Resultado AS BIT OUTPUT
+AS
+BEGIN
+	DECLARE @idEvaluacion INT,@desc VARCHAR(300)
+	IF(SELECT COUNT(*) FROM evento WHERE ID_evento=@idevento)=0
+	BEGIN
+		SET @Resultado=0
+	END
+	ELSE
+	BEGIN
+		IF(@descripcion IS NULL)
+		BEGIN
+			SET @desc = 'No hay Observaciones'
+		END
+		ELSE
+		BEGIN
+			SET @desc = @descripcion
+		END
+		INSERT INTO evaluacion(Valor,Descripcion) VALUES(@valor,@desc)
+		SET @idEvaluacion=(SELECT ID_evaluacion FROM evaluacion WHERE Valor=@valor AND Descripcion=@descripcion)
+		INSERT INTO evento_evaluacion(ID_evaluacionFK,ID_eventoFK) VALUES (@idEvaluacion,@idevento)
+		SET @Resultado=1
+	END
+END
+GO
+-------------
+-------------
+
+CREATE OR ALTER PROCEDURE dislikeEvent @idusuario INT,@idevento INT,@Resultado AS BIT OUTPUT
+AS
+BEGIN
+	IF(SELECT COUNT(*) FROM evento WHERE ID_evento=@idevento)=0
+	BEGIN
+		SET @Resultado=0
+	END
+	ELSE
+	BEGIN
+		UPDATE evento SET likes= likes-1 WHERE ID_evento=@idevento
+		DELETE FROM usuario_like_evento WHERE @idusuario=ID_usuarioFK AND @idevento=ID_eventoFK
+		SET @Resultado=1
+	END
+END
+GO
+-------------
+-------------
+CREATE OR ALTER PROCEDURE likeEvent @idusuario INT,@idevento INT,@Resultado AS BIT OUTPUT
+AS
+BEGIN
+	IF(SELECT COUNT(*) FROM evento WHERE ID_evento=@idevento)=0
+	BEGIN
+		SET @Resultado=0
+	END
+	ELSE
+	BEGIN
+		UPDATE evento SET likes=likes+1 WHERE ID_evento=@idevento
+		INSERT INTO usuario_like_evento(ID_usuarioFK,ID_eventoFK) VALUES (@idusuario,@idevento)
+		SET @Resultado=1
+	END
+END
+GO
+
+-------------
+-------------
 
 
 

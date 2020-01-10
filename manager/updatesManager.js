@@ -63,6 +63,49 @@ exports.updateUser = async (req) => {
     }
 };
 
+exports.updateLikeEvent = async (req) => {
+    try {
+        console.log(req)
+        const pool = await poolConnection.getConnection();
+        let result = await pool.request()
+            .input('idevento',            sql.Int,    1)
+            .input('idusuario',              sql.Int,   1)
+            .output('Resultado',    sql.Bit)
+            .execute('likeEvent');
+            
+        sql.close();
+        console.log(result);
+        return result;
+
+    } catch (err) {
+        sql.close();
+        console.log(err);
+        return "Error en " + err;
+    }
+};
+
+exports.updateDislikeEvent = async (req) => {
+    try {
+        console.log(req)
+        const pool = await poolConnection.getConnection();
+        let result = await pool.request()
+            .input('idevento',            sql.Int,    1)
+            .input('idusuario',              sql.Int,   1)
+            .output('Resultado',    sql.Bit)
+            .execute('dislikeEvent');
+            
+        sql.close();
+        console.log(result);
+        return result;
+
+    } catch (err) {
+        sql.close();
+        console.log(err);
+        return "Error en " + err;
+    }
+};
+
+
 
 
 
