@@ -1,8 +1,8 @@
 const config = {
     //LOCAL
     user: 'sa',
-    // password: 'sa1234567890',
-    password: 'Password1234',
+    password: 'sa1234567890',
+    //password: 'Password1234',
     server: 'localhost',
     database: 'QEvent'
     //SERVER
