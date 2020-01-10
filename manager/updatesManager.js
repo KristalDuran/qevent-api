@@ -8,21 +8,38 @@ exports.updateEvent = async (req) => {
         let result = await pool.request()
             .input('idEv',              sql.Int,    1)//req.idEvento
             .input('nameEv',              sql.VarChar(50),   'Cristian')//req.nameEvento
-            .input('descripcionEV',               sql.VarChar(300),    'otro@gmail.com')
+            .input('descripcionEv',               sql.VarChar(300),    'otro@gmail.com')
             .input('ubicacion',                sql.VarChar(200),    'Alajuela, Costa Rica')
             .input('tipo',                sql.VarChar(100),    'Cultural')//req.tipo
-            .input('fecha',                sql.Date,    '2020-02-21')//req.fecha
-            .input('hora',                      sql.Time,   '12:30')
+            .input('fecha',                sql.VarChar(10),    '2020-02-21')//req.fecha
+            .input('hora',                      sql.VarChar(5),   '12:30')
             .input('restriccion',                sql.VarChar(200),    'Correr')
             .input('idencargado',                sql.Int,    1)//req.idEncargado
+            .input('URLimgEv',                      sql.VarChar(300),   'url.com')
+            .output('Resultado',                sql.Bit)
+            .execute('editEvent');        
+        sql.close();
+        console.log(result);
+        return result;
+
+    } catch (err) {
+        sql.close();
+        console.log(err);
+        return "Error en " + err;
+    }
+}
+exports.updateInvitado = async (req) => {
+    try {
+        const pool = await poolConnection.getConnection();
+        let result = await pool.request()
+            .input('idInvitado',              sql.Int,    1)//req.idEvento
             .input('nameInv',                sql.VarChar(50),    'Carlitos')//req.nameInv
             .input('descInv',                      sql.VarChar(300),   '88339374')
             .input('correoInv',                sql.VarChar(50),    'otro@gmail.com')
             .input('numeroInv',                sql.VarChar(8),    '88339374')
             .input('URLimgInv',                sql.VarChar(300),    'url.com')
-            .input('URLimgEv',                      sql.VarChar(300),   'url.com')
             .output('Resultado',                sql.Bit)
-            .execute('editEvent');
+            .execute('editInvitado');
             
         sql.close();
         console.log(result);

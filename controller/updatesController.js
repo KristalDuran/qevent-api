@@ -43,6 +43,27 @@ router.get('/updateEvent', function(req, res, next) { //
         res.send(JSON.stringify(response));
     }
   });
+  router.get('/updateInvitado', function(req, res, next) { //
+    try {
+        eventManager.updateInvitado(req.body).then(
+            (data) => {
+                let response = {
+                  content: data.recordset,
+                  success: data.output,
+                  code: 200
+                };
+                res.send(JSON.stringify(response));
+            }
+        );
+    }
+    catch (err) {
+        let response = {
+          content: err,
+          code: 500
+        };
+        res.send(JSON.stringify(response));
+    }
+  });
   router.get('/updateDislikeEvent', function(req, res, next) { //
     try {
         eventManager.updateDislikeEvent(req.body).then(

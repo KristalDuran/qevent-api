@@ -44,6 +44,27 @@ router.get('/addEvent', function(req, res, next) {//post
         res.send(JSON.stringify(response));
     }
 });
+router.get('/addInvitado', function(req, res, next) {//post
+    try {
+        eventManager.addInvit(req.query).then(
+            (data) => {
+                let response = {
+                    content: data.recordset,
+                    success: data.output,
+                    code: 200
+                };
+                res.send(JSON.stringify(response));
+            }
+        );
+    }
+    catch (err) {
+        let response = {
+            content: err,
+            code: 500
+        };
+        res.send(JSON.stringify(response));
+    }
+});
 router.get('/shareEvent', function(req, res, next) {//post
     try {
         eventManager.shareEvent(req.body).then(
