@@ -55,10 +55,12 @@ CREATE TABLE evento(
    Tipo VARCHAR(100) NOT NULL,
    ID_encargadoFK INT NOT NULL,
    ID_restriccionFK INT NOT NULL,
+   Likes INT NOT NULL,
+   Shares INT NOT NULL,
    Eliminado BIT NOT NULL,
    PRIMARY KEY (ID_evento),
-   FOREIGN KEY (ID_encargadoFK) REFERENCES usuario(ID_usuario),
-   FOREIGN KEY (ID_restriccionFK) REFERENCES restriccion(ID_restriccion)
+   FOREIGN KEY (ID_restriccionFK) REFERENCES restriccion(ID_restriccion),
+   FOREIGN KEY (ID_encargadoFK) REFERENCES usuario(ID_usuario)
 
 )
 GO
@@ -108,22 +110,23 @@ CREATE TABLE inscritos(
 	FOREIGN KEY (ID_eventoFK) REFERENCES evento(ID_evento),
 	FOREIGN KEY (ID_usuarioFK) REFERENCES usuario(ID_usuario)
 )
-GO
-INSERT INTO inscritos(ID_eventoFK,ID_usuarioFK) values(1,1)
+
 GO
 SELECT * FROM USUARIO
 GO
 INSERT INTO usuario(Nombre,Correo,NombreUsuario,Contrasena,Numero,Rol,Eliminado) VALUES('Ignacio','algo@gmail.com','IGN','1234','86835719','Administrador',0)
 GO
-INSERT INTO invitadoEspecial(Nombre,Descripcion,Numero,Correo) VALUES('Carlos','BLABLA','123456789','invitado@gmail.com')
+INSERT INTO invitadoEspecial(Nombre,Descripcion,Numero,Correo) VALUES('Carlos','BLABLA','12345678','invitado@gmail.com')
 GO
 Insert into restriccion(Detalle) values ('ninguna restriccion')
 go
-INSERT INTO evento(Nombre,Descripcion,Ubicacion,Fecha,Hora,Tipo,ID_encargadoFK,ID_invitadoFK,ID_restriccionFK,Eliminado) VALUES ('Evento 1','Actividad recreativa para niños','Monterrey, San Carlos','2019-12-22','12:30','Cultural',1,1,1,0)
+INSERT INTO evento(Nombre,Descripcion,Ubicacion,Fecha,Hora,Tipo,Likes,Shares,ID_restriccionFK,ID_encargadoFK,Eliminado) VALUES ('Evento 1','Actividad recreativa para niños','Monterrey, San Carlos','2019-12-22','12:30','Cultural',0,0,1,1,0)
 GO
 INSERT INTO imagen(Fuente)	VALUES ('www.descarga.com')
 GO
 INSERT INTO imagen(Fuente)	VALUES ('www.invitado.com')
+GO
+INSERT INTO inscritos(ID_eventoFK,ID_usuarioFK) values(1,1)
 GO
 INSERT INTO invitado_imagen(ID_invitadoFK,ID_imagenFK) VALUES (1,2)
 GO
@@ -132,10 +135,6 @@ GO
 INSERT INTO evento_invitado(ID_eventoFK,ID_invitadoFK) values(1,1)
 go
 SELECT * FROM evento
-
-
-
-
 
 
 

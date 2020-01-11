@@ -224,14 +224,12 @@ BEGIN
 		UPDATE invitadoEspecial SET Numero=@numeroInv WHERE ID_invitado=@idInvitado
 	END
 	IF(@URLimgInv is not null)
-		BEGIN
-			INSERT INTO imagen(Fuente) VALUES (@URLimgInv)
-			SET @idImgInv= (SELECT ID_imagen FROM imagen WHERE Fuente=@URLimgInv)
-			UPDATE invitado_imagen SET ID_imagenFK=@idImgInv WHERE ID_invitadoFK=@idInvitado
-		END
-		SET @Resultado=1;
+	BEGIN
+		INSERT INTO imagen(Fuente) VALUES (@URLimgInv)
+		SET @idImgInv= (SELECT ID_imagen FROM imagen WHERE Fuente=@URLimgInv)
+		UPDATE invitado_imagen SET ID_imagenFK=@idImgInv WHERE ID_invitadoFK=@idInvitado
 	END
-
+	SET @Resultado=1;
 END
 GO
 
@@ -429,9 +427,3 @@ BEGIN
 	
 END
 GO
-
-
-
-
-
-
