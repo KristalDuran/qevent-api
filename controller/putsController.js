@@ -67,7 +67,7 @@ router.get('/addInvitado', function(req, res, next) {//post
 });
 router.get('/shareEvent', function(req, res, next) {//post
     try {
-        eventManager.shareEvent(req.body).then(
+        eventManager.shareEvent(req.query).then(
             (data) => {
                 let response = {
                     content: data.recordset,
@@ -88,7 +88,7 @@ router.get('/shareEvent', function(req, res, next) {//post
 });
 router.get('/evaluateEvent', function(req, res, next) {//post
     try {
-        eventManager.evaluateEvent(req.body).then(
+        eventManager.evaluateEvent(req.query).then(
             (data) => {
                 let response = {
                     content: data.recordset,

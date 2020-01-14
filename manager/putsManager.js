@@ -77,7 +77,7 @@ exports.shareEvent = async (req) => {
     try {
         const pool = await poolConnection.getConnection();
         let result = await pool.request()
-            .input('idevento',              sql.INT,   1)
+            .input('idevento',              sql.INT,   req.id)
             .output('Resultado',                sql.Bit)
             .execute('shareEvent');
             
@@ -114,9 +114,9 @@ exports.evaluateEvent = async (req) => {
     try {
         const pool = await poolConnection.getConnection();
         let result = await pool.request()
-            .input('idevento',              sql.INT,   1)
-            .input('valor',               sql.INT,    4)
-            .input('descripcion',                sql.VarChar(300),    'Evento bastante divertido')
+            .input('idevento',              sql.INT,   req.id)
+            .input('valor',               sql.INT,    req.number)
+            .input('descripcion',                sql.VarChar(300),    req.comment)
             .output('Resultado',                sql.Bit)
             .execute('evaluateEvent');
             

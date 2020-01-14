@@ -63,7 +63,7 @@ exports.updateUser = async (req) => {
             .input('name',              sql.VarChar(75),   req.name)
             .input('email',               sql.VarChar(50),    req.email)
             .input('rol',                sql.VarChar(15),    req.rol)
-            .input('nameuser',                sql.VarChar(10),    'crnodal')
+            .input('nameuser',                sql.VarChar(10),    req.nameuser)
             .input('password',                sql.VarChar(10),    '12345')
             .input('number',                      sql.VarChar(8),   '88339374')
             .output('Resultado',    sql.Bit)
@@ -85,8 +85,8 @@ exports.updateLikeEvent = async (req) => {
         console.log(req)
         const pool = await poolConnection.getConnection();
         let result = await pool.request()
-            .input('idevento',            sql.Int,    1)
-            .input('idusuario',              sql.Int,   1)
+            .input('idevento',            sql.Int,    req.id)
+            .input('idusuario',              sql.Int,   req.userId)
             .output('Resultado',    sql.Bit)
             .execute('likeEvent');
             
@@ -103,11 +103,10 @@ exports.updateLikeEvent = async (req) => {
 
 exports.updateDislikeEvent = async (req) => {
     try {
-        console.log(req)
         const pool = await poolConnection.getConnection();
         let result = await pool.request()
-            .input('idevento',            sql.Int,    1)
-            .input('idusuario',              sql.Int,   1)
+            .input('idevento',            sql.Int,    req.id)
+            .input('idusuario',              sql.Int,   req.userId)
             .output('Resultado',    sql.Bit)
             .execute('dislikeEvent');
             
