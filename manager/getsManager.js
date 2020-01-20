@@ -33,6 +33,24 @@ exports.getEvents = async (req) => {
         return "Error en " + err;   
     }
 }
+
+exports.searchEvent = async (req) => {
+    try {
+        const pool = await poolConnection.getConnection();
+        let result = await pool.request()
+            .input('filtro', sql.VarChar(300), req.filtro)//2
+            .output('Resultado', sql.Bit)
+            .execute('searchEvent');
+        sql.close();
+        console.log(result);
+        return result;
+
+    } catch (err) {
+        console.log(err)
+        sql.close();
+        return "Error en " + err;   
+    }
+}
 exports.getEvent = async (req) => {
     try {
         const pool = await poolConnection.getConnection();
