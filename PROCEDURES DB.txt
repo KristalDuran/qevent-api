@@ -452,3 +452,38 @@ BEGIN
 	END
 END
 GO
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+----------------
+----------------
+
+ALTER   PROCEDURE [dbo].[getEvent]  @id_evento INTEGER,@Resultado AS BIT OUTPUT
+AS
+BEGIN
+    DECLARE @FUENTE AS VARCHAR;
+    DECLARE @RESTRICCIONES AS VARCHAR;
+
+	IF(SELECT COUNT(*) FROM evento WHERE @id_evento=ID_evento AND Eliminado=0)>0
+	BEGIN
+        SELECT @FUENTE=Fuente
+		FROM evento_imagen INNER JOIN imagen on evento_imagen.ID_imagenFK = imagen.ID_imagen WHERE ID_eventoFK=@id_evento
+		
+        SELECT @RESTRICCIONES=Detalle
+        From restriccion INNER JOIN evento ON ID_restriccion=ID_restriccionFK
+        where ID_evento=@id_evento
+
+		SELECT e.ID_evento,e.Nombre AS 'NombreEvento', e.Descripcion AS 'DescEvento', e.Tipo, e.Ubicacion, Fecha, Hora, likes, shares, @RESTRICCIONES, @FUENTE AS 'FuenteEvento'
+		FROM evento e WHERE e.ID_evento=@id_evento
+		SET @Resultado = 1;
+	END
+	ELSE
+	BEGIN
+		SET @Resultado = 0;
+	END
+END
+
+GO
