@@ -6,16 +6,16 @@ exports.updateEvent = async (req) => {
     try {
         const pool = await poolConnection.getConnection();
         let result = await pool.request()
-            .input('idEv',              sql.Int,    1)//req.idEvento
-            .input('nameEv',              sql.VarChar(50),   'Cristian')//req.nameEvento
-            .input('descripcionEv',               sql.VarChar(300),    'otro@gmail.com')
-            .input('ubicacion',                sql.VarChar(200),    'Alajuela, Costa Rica')
-            .input('tipo',                sql.VarChar(100),    'Cultural')//req.tipo
-            .input('fecha',                sql.VarChar(10),    '2020-02-21')//req.fecha
-            .input('hora',                      sql.VarChar(5),   '12:30')
-            .input('restriccion',                sql.VarChar(200),    'Correr')
+            .input('idEv',              sql.Int, req.id)
+            .input('nameEv',              sql.VarChar(50), req.name)
+            .input('descripcionEv',               sql.VarChar(300), req.description)
+            .input('ubicacion',                sql.VarChar(200), req.address)
+            .input('tipo',                sql.VarChar(100),    req.type)
+            .input('fecha',                sql.VarChar(10),    req.date)
+            .input('hora',                      sql.VarChar(5), req.time)
+            .input('restriccion',                sql.VarChar(200), req.restriccion)
             .input('idencargado',                sql.Int,    1)//req.idEncargado
-            .input('URLimgEv',                      sql.VarChar(300),   'url.com')
+            .input('URLimgEv',                      sql.VarChar(300),   req.URLimgEv)
             .output('Resultado',                sql.Bit)
             .execute('editEvent');        
         sql.close();
