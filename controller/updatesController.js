@@ -66,7 +66,7 @@ router.get('/updateEvent', function(req, res, next) { //
   });
   router.get('/updateDislikeEvent', function(req, res, next) { //
     try {
-        eventManager.updateDislikeEvent(req.body).then(
+        eventManager.updateDislikeEvent(req.query).then(
             (data) => {
                 let response = {
                   content: data.recordset,
@@ -87,7 +87,7 @@ router.get('/updateEvent', function(req, res, next) { //
   });
   router.get('/updateLikeEvent', function(req, res, next) { //
     try {
-        eventManager.updateLikeEvent(req.body).then(
+        eventManager.updateLikeEvent(req.query).then(
             (data) => {
                 let response = {
                   content: data.recordset,
