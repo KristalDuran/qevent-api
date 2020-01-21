@@ -521,3 +521,15 @@ BEGIN
 	
 END
 GO
+CREATE OR ALTER PROCEDURE getComments  @id_evento INTEGER,@Resultado AS BIT OUTPUT
+AS
+BEGIN
+	IF((SELECT COUNT(*) FROM evaluacion)>0)
+	BEGIN
+		SELECT descripcion FROM evaluacion AS e INNER JOIN evento_evaluacion AS ee ON ee.ID_eventoFK=@id_evento AND e.ID_evaluacion=ee.ID_evaluacionFK
+		SET @Resultado = 1;
+	END
+	ELSE
+		SET @Resultado = 0;
+END
+GO
