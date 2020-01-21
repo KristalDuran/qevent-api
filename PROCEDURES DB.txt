@@ -16,7 +16,7 @@ GO---------------
 
 
 
-  CREATE OR ALTER PROCEDURE getEvents @Resultado AS BIT OUTPUT
+CREATE OR ALTER PROCEDURE getEvents @Resultado AS BIT OUTPUT
 AS
 BEGIN
 	IF(SELECT COUNT(*) FROM evento WHERE Eliminado=0)>0
@@ -43,7 +43,7 @@ BEGIN
 		CLOSE INSC
 		deallocate INSC
 		SELECT ID_evento, Nombre,Tipo,Ubicacion,Fecha,Hora,EPublico,@inscritos AS 'inscritos'
-		FROM evento AS e INNER JOIN inscritos AS i ON Eliminado=0 AND i.ID_eventoFK=e.ID_evento;
+		FROM evento AS e WHERE Eliminado=0;
 		SET @Resultado = 1;
 	END
 	ELSE
@@ -502,3 +502,23 @@ BEGIN
 		UPDATE evento SET EPublico=0 WHERE ID_evento=@id_evento
 	END
 END
+GO
+CREATE OR ALTER PROCEDURE isRegistered @idusuario INT,@idevento INT, @Resultado AS BIT OUTPUT
+AS
+BEGIN
+	DECLARE @EstaInscrito BIT
+	SET @Resultado=0
+	IF((SELECT COUNT(*)		FROM evento  e INNER JOIN inscritos i ON i.ID_usuarioFK=@idusuario AND i.ID_eventoFK=e.ID_evento AND ID_evento=@idevento)=1)
+	BEGIN
+		SET @EstaInscrito=1
+		SET @Resultado=1
+	END
+	ELSE
+	BEGIN
+		SET @EstaInscrito= 0
+		SET @Resultado=1
+	END
+	SELECT @EstaInscrito AS 'EstaInscrito'
+	
+END
+GO
