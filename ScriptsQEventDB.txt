@@ -57,6 +57,7 @@ CREATE TABLE evento(
    ID_restriccionFK INT NOT NULL,
    Likes INT NOT NULL,
    Shares INT NOT NULL,
+   EPublico BIT NOT NULL,
    Eliminado BIT NOT NULL,
    PRIMARY KEY (ID_evento),
    FOREIGN KEY (ID_restriccionFK) REFERENCES restriccion(ID_restriccion),
