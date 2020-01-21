@@ -35,7 +35,7 @@ CREATE TABLE restriccion(
 GO
 CREATE TABLE imagen(
 	ID_imagen INT IDENTITY NOT NULL,
-	Fuente VARCHAR(300) NOT NULL,
+	Fuente VARCHAR(300),
 	PRIMARY KEY (ID_imagen)
 )
 GO
@@ -112,6 +112,20 @@ CREATE TABLE inscritos(
 )
 
 GO
+CREATE TABLE evaluacion(
+	ID_evaluacion INT IDENTITY NOT NULL,
+	descripcion VARCHAR(300),
+	valor INT NOT NULL
+	PRIMARY KEY (ID_evaluacion)
+)
+GO
+CREATE TABLE [dbo].[evento_evaluacion](
+	[ID_evento_evaluacion] [int] IDENTITY(1,1) NOT NULL,
+	[ID_eventoFK] [int] NOT NULL,
+	[ID_evaluacionFK] [int] NOT NULL,
+	PRIMARY KEY (ID_evento_evaluacion))
+GO
+
 SELECT * FROM USUARIO
 GO
 INSERT INTO usuario(Nombre,Correo,NombreUsuario,Contrasena,Numero,Rol,Eliminado) VALUES('Ignacio','algo@gmail.com','IGN','1234','86835719','Administrador',0)
