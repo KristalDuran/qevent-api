@@ -398,9 +398,10 @@ CREATE OR ALTER PROCEDURE evaluateEvent @idevento INT,@valor INT, @descripcion V
 AS
 BEGIN
 	DECLARE @idEvaluacion INT,@desc VARCHAR(300)
-	IF(SELECT COUNT(*) FROM evento WHERE ID_evento=@idevento)=0
+	IF((SELECT COUNT(*) FROM evento WHERE ID_evento=@idevento)=0)
 	BEGIN
 		SET @Resultado=0
+		SELECT @Resultado
 	END
 	ELSE
 	BEGIN
@@ -412,14 +413,14 @@ BEGIN
 		BEGIN
 			SET @desc = @descripcion
 		END
-		INSERT INTO evaluacion(Valor,Descripcion) VALUES(@valor,@desc)
-		SET @idEvaluacion=(SELECT ID_evaluacion FROM evaluacion WHERE Valor=@valor AND Descripcion=@descripcion)
+		INSERT INTO evaluacion(valor,descripcion) VALUES(@valor,@desc)
+		SET @idEvaluacion=(SELECT ID_evaluacion FROM evaluacion WHERE valor=@valor AND descripcion=@descripcion)
 		INSERT INTO evento_evaluacion(ID_evaluacionFK,ID_eventoFK) VALUES (@idEvaluacion,@idevento)
 		SET @Resultado=1
+		SELECT @Resultado
 	END
 END
-GO
--------------
+GO-------------
 -------------
 
 CREATE OR ALTER PROCEDURE dislikeEvent @idusuario INT,@idevento INT,@Resultado AS BIT OUTPUT
