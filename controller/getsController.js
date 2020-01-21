@@ -66,6 +66,28 @@ router.get('/getComments', function(req, res, next) {
         res.send(JSON.stringify(response));
     }
 });
+router.get('/getRegistered', function(req, res, next) {
+    try {
+        console.log(req.query)
+        eventManager.getRegistered(req.query).then(
+            (data) => {
+                let response = {
+                    content: data.recordset,
+                    success: data.output,
+                    code: 200
+                };
+                res.send(JSON.stringify(response));
+            }
+        );
+    }
+    catch (err) {
+        let response = {
+            content: err,
+            code: 500
+        };
+        res.send(JSON.stringify(response));
+    }
+});
 router.get('/getEvents', function(req, res, next) {
     try {
         eventManager.getEvents(req.body).then(
