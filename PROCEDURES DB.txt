@@ -14,13 +14,36 @@ END
 GO---------------
 ---------------
 
-CREATE OR ALTER PROCEDURE getEvents @Resultado AS BIT OUTPUT
+
+
+  CREATE OR ALTER PROCEDURE getEvents @Resultado AS BIT OUTPUT
 AS
 BEGIN
 	IF(SELECT COUNT(*) FROM evento WHERE Eliminado=0)>0
-	BEGIN
-		SELECT ID_evento, Nombre,Tipo,Ubicacion,Fecha,Hora
-		FROM evento WHERE Eliminado=0;
+		BEGIN
+		DECLARE @inscritos VARCHAR(8000)
+		DECLARE @insc  VARCHAR(80),@cont INT
+		DECLARE INSC CURSOR FOR SELECT u.Nombre FROM usuario AS u INNER JOIN inscritos AS i ON 1=i.ID_eventoFK AND i.ID_usuarioFK=u.ID_usuario
+		SET @inscritos = '';
+		SET @cont=0;
+		OPEN INSC
+		FETCH NEXT FROM INSC INTO @insc
+		WHILE @@FETCH_STATUS =  0
+		BEGIN
+			IF(@cont=0)
+			BEGIN
+				SET @inscritos = @insc;
+				SET @cont =1;
+			END
+			ELSE
+			BEGIN SET @inscritos = @inscritos+', '+@insc END
+      
+		FETCH NEXT FROM INSC INTO @insc
+		END
+		CLOSE INSC
+		deallocate INSC
+		SELECT ID_evento, Nombre,Tipo,Ubicacion,Fecha,Hora,EPublico,@inscritos AS 'inscritos'
+		FROM evento AS e INNER JOIN inscritos AS i ON Eliminado=0 AND i.ID_eventoFK=e.ID_evento;
 		SET @Resultado = 1;
 	END
 	ELSE
@@ -30,32 +53,53 @@ GO
 ----------------
 ----------------
 
+
 CREATE OR ALTER PROCEDURE getEvent  @id_evento INTEGER,@Resultado AS BIT OUTPUT
 AS
 BEGIN
-	IF(SELECT COUNT(*) FROM evento WHERE @id_evento=ID_evento AND Eliminado=0)>0
-	BEGIN
 		
-		SELECT e.ID_evento,e.Nombre AS 'NombreEvento',e.Descripcion AS 'DescEvento',	Fuente AS 'FuenteEvento',e.Tipo,e.Ubicacion,Fecha,
-		Hora,r.Detalle AS 'Restricciones',likes,shares
-		FROM evento e  INNER JOIN evento_imagen eei ON eei.ID_eventoFK=e.ID_evento INNER JOIN imagen i ON i.ID_imagen=eei.ID_imagenFK
-		 INNER JOIN restriccion r ON r.ID_restriccion=e.ID_restriccionFK WHERE e.ID_evento=@id_evento
-		SET @Resultado = 1;
-	END
-	ELSE
-	BEGIN
-		SET @Resultado = 0;
-	END
-END
-GO
-CREATE OR ALTER PROCEDURE getInvitadosEvento @id_evento INTEGER,@Resultado AS BIT OUTPUT
-AS
-BEGIN
 	IF(SELECT COUNT(*) FROM evento WHERE @id_evento=ID_evento AND Eliminado=0)>0
 	BEGIN
-		SELECT DISTINCT ID_invitado,Nombre,Descripcion,Correo,Numero,Fuente FROM invitadoEspecial ie INNER JOIN invitado_imagen ii ON ie.ID_invitado=ii.ID_invitadoFK INNER JOIN imagen i ON i.ID_imagen=ii.ID_imagenFK
-		 INNER JOIN evento_invitado ei ON  ei.ID_eventoFK=@id_evento;
-		SET @Resultado = 1;
+		DECLARE @comentarios VARCHAR(8000)
+		DECLARE @coment  VARCHAR(80),@cont INT,@evaluacion INT
+		SET @evaluacion = (SELECT SUM(valor)/COUNT(valor) FROM evaluacion AS e INNER JOIN evento_evaluacion AS ee ON @id_evento=ee.ID_eventoFK AND ee.ID_evaluacionFK=e.ID_evaluacion)
+		DECLARE COMENT CURSOR FOR SELECT e.descripcion FROM evaluacion AS e INNER JOIN evento_evaluacion AS ee ON @id_evento=ee.ID_eventoFK AND ee.ID_evaluacionFK=e.ID_evaluacion
+		select * from evaluacion
+		SET @comentarios = '';
+		SET @cont=0;
+		OPEN INSC
+		FETCH NEXT FROM COMENT INTO @coment
+		WHILE @@FETCH_STATUS =  0
+		BEGIN
+			IF(@cont=0)
+			BEGIN
+				SET @comentarios = @coment;
+				SET @cont =1;
+			END
+			ELSE
+			BEGIN SET @comentarios = @comentarios+', '+@coment END
+      
+		FETCH NEXT FROM COMENT INTO @coment
+		END
+		CLOSE COMENT
+		deallocate COMENT
+		IF((SELECT CONVERT (date, SYSDATETIME())) < (SELECT Fecha FROM evento WHERE ID_evento=@id_evento))
+		BEGIN
+			SELECT e.ID_evento,e.Nombre AS 'NombreEvento',e.Descripcion AS 'DescEvento',	Fuente AS 'FuenteEvento',e.Tipo,e.Ubicacion,Fecha,e.EPublico,
+			Hora,r.Detalle AS 'Restricciones',likes,shares
+			FROM evento e  INNER JOIN evento_imagen eei ON eei.ID_eventoFK=e.ID_evento INNER JOIN imagen i ON i.ID_imagen=eei.ID_imagenFK
+			 INNER JOIN restriccion r ON r.ID_restriccion=e.ID_restriccionFK WHERE e.ID_evento=@id_evento
+			SET @Resultado = 1;
+		END
+		ELSE
+		BEGIN
+			SELECT e.ID_evento,e.Nombre AS 'NombreEvento',e.Descripcion AS 'DescEvento',	Fuente AS 'FuenteEvento',e.Tipo,e.Ubicacion,Fecha,e.EPublico,
+			Hora,r.Detalle AS 'Restricciones',likes,shares,@comentarios as 'Comentarios', @evaluacion as 'ValorPromedio'
+			FROM evento e  INNER JOIN evento_imagen eei ON eei.ID_eventoFK=e.ID_evento INNER JOIN imagen i ON i.ID_imagen=eei.ID_imagenFK
+			INNER JOIN restriccion r ON r.ID_restriccion=e.ID_restriccionFK WHERE e.ID_evento=@id_evento
+			SET @Resultado = 1;
+		END
+		
 	END
 	ELSE
 	BEGIN
@@ -155,7 +199,7 @@ GO
 
 
 CREATE OR ALTER PROCEDURE addEvent  @nameEv VARCHAR(50), @descripcionEv VARCHAR(300), @ubicacion VARCHAR(200),
-@tipo VARCHAR(100),@fecha VARCHAR(10),@hora VARCHAR(5),@restriccion VARCHAR(200),@idencargado INT,@URLimgEv VARCHAR(300),@Resultado AS BIT OUTPUT
+@tipo VARCHAR(100),@fecha VARCHAR(10),@hora VARCHAR(5),@restriccion VARCHAR(200),@idencargado INT,@URLimgEv VARCHAR(300),@publico BIT,@Resultado AS BIT OUTPUT
 AS
 BEGIN
 	DECLARE @idEvent INT,  @idRestriccion INT, @idImgEv INT
@@ -177,8 +221,8 @@ BEGIN
 			SET @idRestriccion = (SELECT ID_restriccion FROM restriccion WHERE Detalle=@restriccion)
 		END
 		
-		INSERT INTO evento(Nombre,Descripcion,Ubicacion,Fecha,Hora,Tipo,ID_encargadoFK,ID_restriccionFK,Eliminado) 
-		VALUES (@nameEv,@descripcionEv,@ubicacion,@fecha,@hora,@tipo,@idencargado,@idRestriccion,0)
+		INSERT INTO evento(Nombre,Descripcion,Ubicacion,Fecha,Hora,Tipo,ID_encargadoFK,ID_restriccionFK,Eliminado,EPublico) 
+		VALUES (@nameEv,@descripcionEv,@ubicacion,@fecha,@hora,@tipo,@idencargado,@idRestriccion,0,@publico)
 		SET @idEvent= (SELECT ID_evento FROM evento WHERE Nombre=@nameEv AND Descripcion=@descripcionEv AND Ubicacion=@ubicacion AND tipo=@tipo AND ID_restriccionFK=@idRestriccion)
 		
 		INSERT INTO evento_imagen(ID_eventoFK,ID_imagenFK) VALUES (@idEvent,@idImgEv)
@@ -452,3 +496,16 @@ BEGIN
 	END
 END
 GO
+
+CREATE OR ALTER PROCEDURE ChangeStatusEvent @id_evento INT,@Resultado AS BIT OUTPUT
+AS
+BEGIN
+	IF((SELECT EPublico FROM evento WHERE ID_evento=@id_evento) = 0)
+	BEGIN
+		UPDATE evento SET EPublico=1 WHERE ID_evento=@id_evento
+	END
+	ELSE
+	BEGIN
+		UPDATE evento SET EPublico=0 WHERE ID_evento=@id_evento
+	END
+END
