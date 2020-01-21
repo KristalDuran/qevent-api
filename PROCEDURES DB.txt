@@ -401,7 +401,6 @@ BEGIN
 	IF((SELECT COUNT(*) FROM evento WHERE ID_evento=@idevento)=0)
 	BEGIN
 		SET @Resultado=0
-		SELECT @Resultado
 	END
 	ELSE
 	BEGIN
@@ -417,7 +416,6 @@ BEGIN
 		SET @idEvaluacion=(SELECT ID_evaluacion FROM evaluacion WHERE valor=@valor AND descripcion=@descripcion)
 		INSERT INTO evento_evaluacion(ID_evaluacionFK,ID_eventoFK) VALUES (@idEvaluacion,@idevento)
 		SET @Resultado=1
-		SELECT @Resultado
 	END
 END
 GO-------------
