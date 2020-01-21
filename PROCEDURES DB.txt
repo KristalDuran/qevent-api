@@ -533,3 +533,15 @@ BEGIN
 		SET @Resultado = 0;
 END
 GO
+CREATE OR ALTER PROCEDURE getRegistered  @id_evento INTEGER,@Resultado AS BIT OUTPUT
+AS
+BEGIN
+	IF((SELECT COUNT(*) FROM inscritos)>0)
+	BEGIN
+		SELECT Nombre,Correo,Numero  FROM usuario AS u INNER JOIN inscritos AS i ON i.ID_eventoFK=@id_evento AND u.ID_usuario=i.ID_usuarioFK
+		SET @Resultado = 1;
+	END
+	ELSE
+		SET @Resultado = 0;
+END
+GO

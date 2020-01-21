@@ -85,6 +85,23 @@ exports.getComments = async (req) => {
         return "Error en " + err;   
     }
 }
+exports.getRegistered = async (req) => {
+    try {
+        const pool = await poolConnection.getConnection();
+        let result = await pool.request()
+            .input('id_evento', sql.Int, req.idevento)//2
+            .output('Resultado', sql.Bit)
+            .execute('getRegistered');
+        sql.close();
+        //console.log(result);
+        return result;
+
+    } catch (err) {
+        console.log(err)
+        sql.close();
+        return "Error en " + err;   
+    }
+}
 exports.getInvitadosEvent = async (req) => {
     try {
         const pool = await poolConnection.getConnection();
