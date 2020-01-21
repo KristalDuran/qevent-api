@@ -33,7 +33,7 @@ exports.addEvent = async (req) => {
             .input('ubicacion',                sql.VarChar(200),    req.ubicacion)
             .input('tipo',                sql.VarChar(100),    req.tipo)//req.tipo
             .input('fecha',                sql.VarChar(10),    req.fecha)//req.fecha
-            .input('hora',                      sql.VarChar(5),   '12:30')
+            .input('hora',                      sql.VarChar(5),   req.hora)
             .input('restriccion',                sql.VarChar(200),    req.restriccion)
             .input('idencargado',                sql.Int,    1)//req.idEncargado
             .input('publico',                sql.BIT,    1)//

@@ -24,7 +24,7 @@ router.get('/updateUser', function(req, res, next) { //post
   });
 router.get('/updateEvent', function(req, res, next) { //
     try {
-        eventManager.updateEvent(req.body).then(
+        eventManager.updateEvent(req.query).then(
             (data) => {
                 let response = {
                   content: data.recordset,

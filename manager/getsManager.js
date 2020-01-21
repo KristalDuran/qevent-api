@@ -38,7 +38,7 @@ exports.searchEvent = async (req) => {
     try {
         const pool = await poolConnection.getConnection();
         let result = await pool.request()
-            .input('filtro', sql.VarChar(300), req.filtro)//2
+            .input('filtro', sql.VarChar(300), req.filter)//2
             .output('Resultado', sql.Bit)
             .execute('searchEvent');
         sql.close();

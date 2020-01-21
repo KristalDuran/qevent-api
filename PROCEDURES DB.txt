@@ -60,11 +60,18 @@ BEGIN
 		
 	IF(SELECT COUNT(*) FROM evento WHERE @id_evento=ID_evento AND Eliminado=0)>0
 	BEGIN
+		DECLARE @FUENTE AS VARCHAR;
+    	DECLARE @RESTRICCIONES AS VARCHAR;
 		DECLARE @comentarios VARCHAR(8000)
 		DECLARE @coment  VARCHAR(80),@cont INT,@evaluacion INT
 		SET @evaluacion = (SELECT SUM(valor)/COUNT(valor) FROM evaluacion AS e INNER JOIN evento_evaluacion AS ee ON @id_evento=ee.ID_eventoFK AND ee.ID_evaluacionFK=e.ID_evaluacion)
 		DECLARE COMENT CURSOR FOR SELECT e.descripcion FROM evaluacion AS e INNER JOIN evento_evaluacion AS ee ON @id_evento=ee.ID_eventoFK AND ee.ID_evaluacionFK=e.ID_evaluacion
-		select * from evaluacion
+		SELECT @FUENTE=Fuente
+		FROM evento_imagen INNER JOIN imagen on evento_imagen.ID_imagenFK = imagen.ID_imagen WHERE ID_eventoFK=@id_evento
+		
+        SELECT @RESTRICCIONES=Detalle
+        From restriccion INNER JOIN evento ON ID_restriccion=ID_restriccionFK
+        where ID_evento=@id_evento
 		SET @comentarios = '';
 		SET @cont=0;
 		OPEN INSC
@@ -85,18 +92,16 @@ BEGIN
 		deallocate COMENT
 		IF((SELECT CONVERT (date, SYSDATETIME())) < (SELECT Fecha FROM evento WHERE ID_evento=@id_evento))
 		BEGIN
-			SELECT e.ID_evento,e.Nombre AS 'NombreEvento',e.Descripcion AS 'DescEvento',	Fuente AS 'FuenteEvento',e.Tipo,e.Ubicacion,Fecha,e.EPublico,
-			Hora,r.Detalle AS 'Restricciones',likes,shares
-			FROM evento e  INNER JOIN evento_imagen eei ON eei.ID_eventoFK=e.ID_evento INNER JOIN imagen i ON i.ID_imagen=eei.ID_imagenFK
-			 INNER JOIN restriccion r ON r.ID_restriccion=e.ID_restriccionFK WHERE e.ID_evento=@id_evento
+			SELECT e.ID_evento,e.Nombre AS 'NombreEvento', e.Descripcion AS 'DescEvento', e.Tipo, e.Ubicacion,e.EPublico, Fecha, Hora, likes, 
+			shares, @RESTRICCIONES AS 'Restricciones', @FUENTE AS 'FuenteEvento'
+		FROM evento e WHERE e.ID_evento=@id_evento
 			SET @Resultado = 1;
 		END
 		ELSE
 		BEGIN
-			SELECT e.ID_evento,e.Nombre AS 'NombreEvento',e.Descripcion AS 'DescEvento',	Fuente AS 'FuenteEvento',e.Tipo,e.Ubicacion,Fecha,e.EPublico,
-			Hora,r.Detalle AS 'Restricciones',likes,shares,@comentarios as 'Comentarios', @evaluacion as 'ValorPromedio'
-			FROM evento e  INNER JOIN evento_imagen eei ON eei.ID_eventoFK=e.ID_evento INNER JOIN imagen i ON i.ID_imagen=eei.ID_imagenFK
-			INNER JOIN restriccion r ON r.ID_restriccion=e.ID_restriccionFK WHERE e.ID_evento=@id_evento
+			SELECT e.ID_evento,e.Nombre AS 'NombreEvento', e.Descripcion AS 'DescEvento', e.Tipo, e.Ubicacion,e.EPublico, Fecha, 
+			Hora, likes, shares, @RESTRICCIONES AS 'Restricciones', @FUENTE AS 'FuenteEvento',@comentarios as 'Comentarios', @evaluacion as 'ValorPromedio'
+		FROM evento e WHERE e.ID_evento=@id_evento
 			SET @Resultado = 1;
 		END
 		
