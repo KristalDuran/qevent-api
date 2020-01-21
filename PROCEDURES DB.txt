@@ -157,7 +157,7 @@ BEGIN
 	END
 	ELSE
 	BEGIN
-		SELECT * FROM evento WHERE @filtro=Nombre OR @filtro=Descripcion OR @filtro=Ubicacion OR @filtro=Fecha OR @filtro=Hora OR @filtro= Tipo
+		SELECT * FROM evento WHERE @filtro=Nombre OR @filtro=Descripcion OR @filtro=Ubicacion OR @filtro=Fecha OR @filtro=Hora OR @filtro= Tipo WHERE Eliminado=0
 	END
 END
 GO
