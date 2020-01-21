@@ -36,6 +36,7 @@ exports.addEvent = async (req) => {
             .input('hora',                      sql.VarChar(5),   req.hora)
             .input('restriccion',                sql.VarChar(200),    req.restriccion)
             .input('idencargado',                sql.Int,    1)//req.idEncargado
+            .input('publico',                sql.BIT,    1)//
             .input('URLimgEv',                      sql.VarChar(300),   req.URLimgEv)
             .output('Resultado',                sql.Bit)
             .execute('addEvent');
