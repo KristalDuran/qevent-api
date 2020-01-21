@@ -8,7 +8,7 @@ exports.getUsers = async (req) => {
             .output('Resultado', sql.Bit)
             .execute('getUsers');
         sql.close();
-        console.log(result);
+        //console.log(result);
         return result;
 
     } catch (err) {
@@ -24,7 +24,7 @@ exports.getEvents = async (req) => {
             .output('Resultado', sql.Bit)
             .execute('getEvents');
         sql.close();
-        console.log(result);
+        //console.log(result);
         return result;
 
     } catch (err) {
@@ -42,7 +42,7 @@ exports.searchEvent = async (req) => {
             .output('Resultado', sql.Bit)
             .execute('searchEvent');
         sql.close();
-        console.log(result);
+        //console.log(result);
         return result;
 
     } catch (err) {
@@ -59,7 +59,7 @@ exports.getEvent = async (req) => {
             .output('Resultado', sql.Bit)
             .execute('getEvent');
         sql.close();
-        console.log(result);
+        //console.log(result);
         return result;
 
     } catch (err) {
@@ -76,7 +76,7 @@ exports.getInvitadosEvent = async (req) => {
             .output('Resultado', sql.Bit)
             .execute('getInvitadosEvento');
         sql.close();
-        console.log(result);
+        //console.log(result);
         return result;
 
     } catch (err) {
@@ -93,7 +93,6 @@ exports.getUser = async (req) => {
             .output('Resultado', sql.Bit)
             .execute('getUser');
         sql.close();
-        console.log(result);
         return result;
 
     } catch (err) {
@@ -106,11 +105,10 @@ exports.getMyEvents= async (req) => {
     try {
         const pool = await poolConnection.getConnection();
         let result = await pool.request()
-            .input('idusuario ', sql.Int, req.id)//2
+            .input('idusuario', sql.Int, req.id)//2
             .output('Resultado', sql.Bit)
             .execute('getMyEvents');
         sql.close();
-        console.log(result);
         return result;
 
     } catch (err) {
@@ -128,7 +126,23 @@ exports.getAcces= async (req) => {
             .output('Resultado', sql.Bit)
             .execute('getAcces');
         sql.close();
-        console.log(result);
+        return result;
+
+    } catch (err) {
+        console.log(err)
+        sql.close();
+        return "Error en " + err;   
+    }
+}
+exports.isRegistered= async (req) => {
+    try {
+        const pool = await poolConnection.getConnection();
+        let result = await pool.request()
+            .input('idusuario', sql.Int, 1)
+            .input('idevento', sql.Int, 1)
+            .output('Resultado', sql.Bit)
+            .execute('isRegistered');
+        sql.close();
         return result;
 
     } catch (err) {

@@ -4,7 +4,7 @@ const config = {
     password: 'sa1234567890',
     //password: 'Password1234',
     server: 'localhost',
-    database: 'QEvent'
+    database: 'QEventsfs'
     //SERVER
     /*user: 'sa',
     password: 'Password1234',
