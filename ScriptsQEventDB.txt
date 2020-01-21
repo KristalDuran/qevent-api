@@ -134,6 +134,9 @@ INSERT INTO evento_imagen(ID_eventoFK,ID_imagenFK) VALUES (1,1)
 GO
 INSERT INTO evento_invitado(ID_eventoFK,ID_invitadoFK) values(1,1)
 go
+INSERT INTO evaluacion(valor,descripcion) VALUES(5,'Excelente Evento')
+GO
+INSERT INTO evento_evaluacion(ID_evaluacionFK,ID_eventoFK) values(1,1)
 SELECT * FROM evento
 
 

@@ -54,6 +54,7 @@ GO
 ----------------
 
 
+
 CREATE OR ALTER PROCEDURE getEvent  @id_evento INTEGER,@Resultado AS BIT OUTPUT
 AS
 BEGIN
@@ -74,7 +75,7 @@ BEGIN
         where ID_evento=@id_evento
 		SET @comentarios = '';
 		SET @cont=0;
-		OPEN INSC
+		OPEN COMENT
 		FETCH NEXT FROM COMENT INTO @coment
 		WHILE @@FETCH_STATUS =  0
 		BEGIN
@@ -111,8 +112,7 @@ BEGIN
 		SET @Resultado = 0;
 	END
 END
-GO
-----------------
+GO----------------
 ----------------
 CREATE OR ALTER PROCEDURE getUser  @id_user INTEGER,@Resultado AS BIT OUTPUT
 AS
