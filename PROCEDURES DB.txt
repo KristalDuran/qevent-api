@@ -157,7 +157,7 @@ BEGIN
 	END
 	ELSE
 	BEGIN
-		SELECT * FROM evento WHERE @filtro=Nombre OR @filtro=Descripcion OR @filtro=Ubicacion OR @filtro=Fecha OR @filtro=Hora OR @filtro= Tipo WHERE Eliminado=0
+		SELECT * FROM evento WHERE (@filtro=Nombre OR @filtro=Descripcion OR @filtro=Ubicacion OR @filtro=Fecha OR @filtro=Hora OR @filtro= Tipo) AND Eliminado=0
 	END
 END
 GO
@@ -488,19 +488,7 @@ BEGIN
 	
 END
 GO
-CREATE OR ALTER PROCEDURE searchEvent @filtro VARCHAR(300),@Resultado AS BIT OUTPUT
-AS
-BEGIN
-	IF(SELECT COUNT(*) FROM evento)=0
-	BEGIN
-		SET @Resultado=0
-	END
-	ELSE
-	BEGIN
-		SELECT * FROM evento WHERE elimiado=0 AND @filtro LIKE Nombre OR @filtro LIKE Descripcion OR @filtro LIKE Ubicacion OR @filtro LIKE Fecha OR @filtro LIKE Hora OR @filtro LIKE  Tipo
-	END
-END
-GO
+
 
 CREATE OR ALTER PROCEDURE ChangeStatusEvent @id_evento INT,@Resultado AS BIT OUTPUT
 AS
