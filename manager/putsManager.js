@@ -95,8 +95,8 @@ exports.addInscripcion = async (req) => {
     try {
         const pool = await poolConnection.getConnection();
         let result = await pool.request()
-            .input('idusuario',              sql.INT,   1)
-            .input('idevento',              sql.INT,   1)
+            .input('idusuario',              sql.INT,   req.idUsuario)
+            .input('idevento',              sql.INT,   req.idEvent)
             .output('Resultado',                sql.Bit)
             .execute('addInscripcion');
             
