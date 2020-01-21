@@ -155,8 +155,8 @@ exports.isRegistered= async (req) => {
     try {
         const pool = await poolConnection.getConnection();
         let result = await pool.request()
-            .input('idusuario', sql.Int, 1)
-            .input('idevento', sql.Int, 1)
+            .input('idusuario', sql.Int, req.idUser)
+            .input('idevento', sql.Int, req.idEvent)
             .output('Resultado', sql.Bit)
             .execute('isRegistered');
         sql.close();
